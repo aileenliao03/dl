@@ -85,14 +85,13 @@ val_tokenized = val_data.map(tokenize_function, batched=True, remove_columns=["t
 val_tokenized.set_format(type="torch", columns=["input_ids"])
 val_loader = DataLoader(val_tokenized, batch_size=4)
 
-# Optimizer and scheduler setup with gradient clipping
+# Optimizer
 optimizer = AdamW(model.parameters(), lr=3e-5)
 num_training_steps = len(train_loader) * 4
 lr_scheduler = get_scheduler("linear", optimizer=optimizer, num_warmup_steps=500, num_training_steps=num_training_steps)
 
 scaler = GradScaler()
 accumulation_steps = 4
-max_grad_norm = 1.0  # Add gradient clipping threshold
 model.train()
 
 for epoch in range(4):
@@ -108,7 +107,7 @@ for epoch in range(4):
 
             if (i + 1) % accumulation_steps == 0:
                 scaler.unscale_(optimizer)
-                torch.nn.utils.clip_grad_norm_(model.parameters(), max_grad_norm)
+                #torch.nn.utils.clip_grad_norm_(model.parameters(), max_grad_norm)
                 optimizer.step()  # Move optimizer step before scheduler step
                 lr_scheduler.step()
                 scaler.update()
