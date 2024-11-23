@@ -76,14 +76,14 @@ def evaluate(model, dataloader):
 
 tokenized_dataset = train_data.map(tokenize_function, batched=True, remove_columns=["text"])
 tokenized_dataset.set_format(type="torch", columns=["input_ids"])
-train_loader = DataLoader(tokenized_dataset, batch_size=12, shuffle=True)
+train_loader = DataLoader(tokenized_dataset, batch_size=4, shuffle=True)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
 val_data = dataset["validation"]
 val_tokenized = val_data.map(tokenize_function, batched=True, remove_columns=["text"])
 val_tokenized.set_format(type="torch", columns=["input_ids"])
-val_loader = DataLoader(val_tokenized, batch_size=12)
+val_loader = DataLoader(val_tokenized, batch_size=4)
 
 # Optimizer
 optimizer = AdamW(model.parameters(), lr=3e-5)
@@ -96,22 +96,34 @@ model.train()
 
 for epoch in range(4):
     for i, batch in enumerate(train_loader):
-        inputs = {key: val.to(device) for key, val in batch.items()}
+        try:
+            inputs = {key: val.to(device) for key, val in batch.items()}
+            
+            with autocast():
+                outputs = model(**inputs, labels=inputs["input_ids"])
+                loss = outputs.loss / accumulation_steps
 
-        with autocast():
-            outputs = model(**inputs, labels=inputs["input_ids"])
-            loss = outputs.loss / accumulation_steps
+            scaler.scale(loss).backward()
 
-        scaler.scale(loss).backward()
+            if (i + 1) % accumulation_steps == 0:
+                scaler.unscale_(optimizer)
+                #torch.nn.utils.clip_grad_norm_(model.parameters(), max_grad_norm)
+                optimizer.step()  # Move optimizer step before scheduler step
+                lr_scheduler.step()
+                scaler.update()
+                optimizer.zero_grad()
 
-        if (i + 1) % accumulation_steps == 0:
-            scaler.step(optimizer)
-            scaler.update()
-            lr_scheduler.step()
-            optimizer.zero_grad()
+            if i % 10 == 0:
+                print(f"Epoch {epoch}, Step {i}, Loss: {loss.item()}")
 
-        if i % 10 == 0:
-            print(f"Epoch {epoch}, Step {i}, Loss: {loss.item()}")
+        except RuntimeError as e:
+            if "out of memory" in str(e) or "invalid argument" in str(e):
+                if hasattr(torch.cuda, 'empty_cache'):
+                    torch.cuda.empty_cache()
+                print(f"CUDA error encountered. Skipping batch...")
+                continue
+            else:
+                raise e
 
     val_loss = evaluate(model, val_loader)
     print(f"Epoch {epoch}, Validation Loss: {val_loss}")
