@@ -144,9 +144,9 @@ for epoch in range(4):
 print("Training completed.")
 
 if mask:
-    output_dir = "./trained_model"
+    output_dir = "./trained_model_duo"
 else:
-    output_dir_no_mask = "./trained_model_no_mask"
+    output_dir_no_mask = "./trained_model_no_mask_duo"
 
 model.save_pretrained(output_dir)
 tokenizer.save_pretrained(output_dir)
