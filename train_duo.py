@@ -11,39 +11,49 @@ tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-1B")
 tokenizer.pad_token = tokenizer.eos_token
 model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-3.2-1B")
 
-class HierarchicalMaskedAttention(nn.Module):
-    def __init__(self, base_attention, levels=3, downsampling_factor=2):
+class DuoAttention(nn.Module):
+    def __init__(self, base_attention, window_size=128):
         super().__init__()
         self.base_attention = base_attention
-        self.levels = levels
-        self.downsampling_factor = downsampling_factor
-
-    def downsample(self, memory):
-        batch_size, seq_len, hidden_dim = memory.size()
-        seq_len_new = seq_len // self.downsampling_factor
-        memory = memory[:, :seq_len_new * self.downsampling_factor, :]
-        memory = memory.view(batch_size, seq_len_new, self.downsampling_factor, hidden_dim).mean(dim=2)
-        return memory
+        self.window_size = window_size
+        
+        # Get hidden dim from base attention
+        hidden_dim = base_attention.embed_dim
+        
+        # Simple MLP with one layer and leaky ReLU
+        self.mask_mlp = nn.Sequential(
+            nn.Linear(hidden_dim, 1),
+            nn.Sigmoid()
+        )
 
     def forward(self, query, key, value, attention_mask=None):
-        all_keys, all_values = [key], [value]
-        for _ in range(self.levels - 1):
-            key = self.downsample(key)
-            value = self.downsample(value)
-            all_keys.append(key)
-            all_values.append(value)
+        # Get mask choice from last query vector
+        last_query = query[:, -1]  # Shape: [batch_size, hidden_dim]
+        mask_choice = self.mask_mlp(last_query)  # Shape: [batch_size, 1]
+        
+        # Original attention
+        full_output = self.base_attention(query, key, value, attn_mask=attention_mask)[0]
+        
+        # Localized attention on recent queries
+        seq_len = query.size(1)
+        start = max(0, seq_len - self.window_size)
+        local_query = query[:, start:seq_len]
+        local_key = key[:, start:seq_len] 
+        local_value = value[:, start:seq_len]
+        local_output = self.base_attention(local_query, local_key, local_value, attn_mask=attention_mask)[0]
+        
+        # Interpolate between full and local attention based on mask choice
+        mask_choice = mask_choice.unsqueeze(1).unsqueeze(2)  # [batch, 1, 1]
+        output = torch.where(mask_choice < 0.1, 
+                           (1 - mask_choice) * local_output,
+                           mask_choice * full_output + (1 - mask_choice) * local_output)
+        return output
 
-        outputs = []
-        for k, v in zip(all_keys, all_values):
-            outputs.append(self.base_attention(query, k, v, attn_mask=attention_mask)[0])
-
-        return sum(outputs) / len(outputs)
-
-def replace_attention_with_masking(model, levels=3, downsampling_factor=2):
+def replace_attention_with_masking(model):
     for name, module in model.named_modules():
         if isinstance(module, nn.MultiheadAttention):
             print(f"Replacing attention module: {name}")
-            hierarchical_attention = HierarchicalMaskedAttention(module, levels, downsampling_factor)
+            hierarchical_attention = DuoAttention(module)
             parent_name = ".".join(name.split(".")[:-1])
             module_name = name.split(".")[-1]
             parent = dict(model.named_modules())[parent_name]
@@ -90,35 +100,19 @@ optimizer = AdamW(model.parameters(), lr=3e-5)
 num_training_steps = len(train_loader) * 4
 lr_scheduler = get_scheduler("linear", optimizer=optimizer, num_warmup_steps=500, num_training_steps=num_training_steps)
 
-<<<<<<< HEAD
-# scaler = GradScaler()
-=======
 #scaler = GradScaler()
->>>>>>> e8958b52d5ed357f90bb8a3f80c142ec1fb20b84
 accumulation_steps = 4
 model.train()
 
 for epoch in range(4):
     for i, batch in enumerate(train_loader):
         try:
-            #breakpoint()
             inputs = {key: val.to(device) for key, val in batch.items()}
             
             with autocast():
                 outputs = model(**inputs, labels=inputs["input_ids"])
                 loss = outputs.loss / accumulation_steps
 
-<<<<<<< HEAD
-  #          scaler.scale(loss).backward()
-            loss.backward()
-
-            if (i + 1) % accumulation_steps == 0:
-   #             scaler.unscale_(optimizer)
-                #torch.nn.utils.clip_grad_norm_(model.parameters(), max_grad_norm)
-                optimizer.step()  # Move optimizer step before scheduler step
-                lr_scheduler.step()
-    #            scaler.update()
-=======
             
             #scaler.scale(loss).backward()
             loss.backward()
@@ -129,10 +123,9 @@ for epoch in range(4):
                 optimizer.step()  # Move optimizer step before scheduler step
                 lr_scheduler.step()
                 #scaler.update()
->>>>>>> e8958b52d5ed357f90bb8a3f80c142ec1fb20b84
                 optimizer.zero_grad()
 
-            if i % 1 == 0:
+            if i % 10 == 0:
                 print(f"Epoch {epoch}, Step {i}, Loss: {loss.item()}")
 
         except RuntimeError as e:
@@ -151,9 +144,9 @@ for epoch in range(4):
 print("Training completed.")
 
 if mask:
-    output_dir = "./trained_model"
+    output_dir = "./trained_model_duo"
 else:
-    output_dir_no_mask = "./trained_model_no_mask"
+    output_dir_no_mask = "./trained_model_no_mask_duo"
 
 model.save_pretrained(output_dir)
 tokenizer.save_pretrained(output_dir)
