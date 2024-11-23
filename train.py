@@ -90,30 +90,32 @@ optimizer = AdamW(model.parameters(), lr=3e-5)
 num_training_steps = len(train_loader) * 4
 lr_scheduler = get_scheduler("linear", optimizer=optimizer, num_warmup_steps=500, num_training_steps=num_training_steps)
 
-scaler = GradScaler()
+# scaler = GradScaler()
 accumulation_steps = 4
 model.train()
 
 for epoch in range(4):
     for i, batch in enumerate(train_loader):
         try:
+            #breakpoint()
             inputs = {key: val.to(device) for key, val in batch.items()}
             
             with autocast():
                 outputs = model(**inputs, labels=inputs["input_ids"])
                 loss = outputs.loss / accumulation_steps
 
-            scaler.scale(loss).backward()
+  #          scaler.scale(loss).backward()
+            loss.backward()
 
             if (i + 1) % accumulation_steps == 0:
-                scaler.unscale_(optimizer)
+   #             scaler.unscale_(optimizer)
                 #torch.nn.utils.clip_grad_norm_(model.parameters(), max_grad_norm)
                 optimizer.step()  # Move optimizer step before scheduler step
                 lr_scheduler.step()
-                scaler.update()
+    #            scaler.update()
                 optimizer.zero_grad()
 
-            if i % 10 == 0:
+            if i % 1 == 0:
                 print(f"Epoch {epoch}, Step {i}, Loss: {loss.item()}")
 
         except RuntimeError as e:
