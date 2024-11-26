@@ -7,7 +7,7 @@ import math
 import time
 
 # Paths to fine-tuned model and baseline
-fine_tuned_model_path = "./trained_hybrid_model" #trained_model_no_mask
+fine_tuned_model_path = "./trained_model_duo" #trained_model_no_mask
 baseline_model_path = "meta-llama/Llama-3.2-1B"
 
 # Load tokenizer and models
