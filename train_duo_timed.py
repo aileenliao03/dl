@@ -129,29 +129,31 @@ class TimedForwardModel(nn.Module):
         start_time = time.perf_counter()
         outputs = self.model(**inputs)
         forward_time = time.perf_counter() - start_time
-        
+
         # Add timing penalty to loss
         if isinstance(outputs, tuple):
             original_loss = outputs[0]
         else:
             original_loss = outputs.loss
-            
-        # Compute time penalty (using smooth L1 loss for stability)
-        time_tensor = torch.tensor(forward_time, device=original_loss.device, dtype=torch.float32)
-        target_tensor = torch.tensor(self.target_time, device=original_loss.device, dtype=torch.float32)
+
+        # Ensure proper tensor creation and device matching
+        time_tensor = torch.tensor([forward_time], device=original_loss.device, dtype=torch.float32)
+        target_tensor = torch.tensor([self.target_time], device=original_loss.device, dtype=torch.float32)
+
+        # Compute time penalty (should be non-negative)
         time_penalty = F.smooth_l1_loss(time_tensor, target_tensor)
-        
+
         # Combine losses
         total_loss = original_loss + self.inference_weight * time_penalty
-        
-        # Save time loss for external access
+
+        # Save time penalty for external access
         self.last_time_loss = time_penalty.item()
-        
+
         if hasattr(outputs, '_replace'):  # For named tuples
             outputs = outputs._replace(loss=total_loss)
         else:  # For other objects
             outputs.loss = total_loss
-            
+
         return outputs
 
 # Wrap your model with timing
