@@ -212,9 +212,18 @@ print("Training completed.")
 if mask:
     output_dir = "./trained_model_duo_timed"
 else:
-    output_dir_no_mask = "./trained_model_no_mask_duo_timed"
+    output_dir = "./trained_model_no_mask_duo_timed"
 
-model.save_pretrained(output_dir)
+# Save the inner model instead of the wrapper
+model.model.save_pretrained(output_dir)
 tokenizer.save_pretrained(output_dir)
 print(f"Model and tokenizer saved to {output_dir}")
+
+# Optionally, if you want to save the wrapper's state too:
+wrapper_state = {
+    'inference_weight': model.inference_weight,
+    'target_time': model.target_time,
+    'last_time_loss': model.last_time_loss
+}
+torch.save(wrapper_state, f"{output_dir}/timed_wrapper_config.pt")
 
