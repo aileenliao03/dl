@@ -5,9 +5,6 @@ import torch
 import torch.nn as nn
 from torch.cuda.amp import autocast, GradScaler
 from transformers import get_scheduler
-import time
-from contextlib import contextmanager
-import torch.nn.functional as F
 
 mask = True
 tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-1B")
@@ -23,16 +20,21 @@ class DuoAttention(nn.Module):
         # Get hidden dim from base attention
         hidden_dim = base_attention.embed_dim
         
-        # Simple MLP with one layer and leaky ReLU
+        # Simple MLP with one layer and sigmoid
         self.mask_mlp = nn.Sequential(
             nn.Linear(hidden_dim, 1),
             nn.Sigmoid()
         )
+        # Add penalty coefficient as a parameter
+        self.penalty_coefficient = 0.1
 
     def forward(self, query, key, value, attention_mask=None):
         # Get mask choice from last query vector
         last_query = query[:, -1]  # Shape: [batch_size, hidden_dim]
         mask_choice = self.mask_mlp(last_query)  # Shape: [batch_size, 1]
+        
+        # Add penalty term for high mask values
+        attention_penalty = self.penalty_coefficient * torch.mean(mask_choice)
         
         # Original attention
         full_output = self.base_attention(query, key, value, attn_mask=attention_mask)[0]
@@ -50,7 +52,7 @@ class DuoAttention(nn.Module):
         output = torch.where(mask_choice < 0.1, 
                            (1 - mask_choice) * local_output,
                            mask_choice * full_output + (1 - mask_choice) * local_output)
-        return output
+        return output, attention_penalty
 
 def replace_attention_with_masking(model):
     for name, module in model.named_modules():
@@ -107,81 +109,21 @@ lr_scheduler = get_scheduler("linear", optimizer=optimizer, num_warmup_steps=500
 accumulation_steps = 4
 model.train()
 
-@contextmanager
-def timer():
-    start = time.perf_counter()
-    try:
-        yield start
-    finally:
-        end = time.perf_counter()
-        elapsed_time = end - start
-
-class TimedForwardModel(nn.Module):
-    def __init__(self, model, inference_weight=1.0, target_time=0.1):
-        super().__init__()
-        self.model = model
-        self.inference_weight = inference_weight
-        self.target_time = target_time
-        self.last_time_loss = None
-
-    def forward(self, **inputs):
-        # Time the forward pass
-        start_time = time.perf_counter()
-        outputs = self.model(**inputs)
-        forward_time = time.perf_counter() - start_time
-        
-        # Add timing penalty to loss
-        if isinstance(outputs, tuple):
-            original_loss = outputs[0]
-        else:
-            original_loss = outputs.loss
-            
-        # Compute time penalty (using smooth L1 loss for stability)
-        time_tensor = torch.tensor(forward_time, device=original_loss.device, dtype=torch.float32)
-        target_tensor = torch.tensor(self.target_time, device=original_loss.device, dtype=torch.float32)
-        time_penalty = F.smooth_l1_loss(time_tensor, target_tensor)
-        
-        # Combine losses
-        total_loss = original_loss + self.inference_weight * time_penalty
-        
-        # Save time loss for external access
-        self.last_time_loss = time_penalty.item()
-        
-        if hasattr(outputs, '_replace'):  # For named tuples
-            outputs = outputs._replace(loss=total_loss)
-        else:  # For other objects
-            outputs.loss = total_loss
-            
-        return outputs
-
-# Wrap your model with timing
-model = TimedForwardModel(model, inference_weight=0.1, target_time=0.001)
-model.to(device)
-
 for epoch in range(4):
     for i, batch in enumerate(train_loader):
         try:
             inputs = {key: val.to(device) for key, val in batch.items()}
             
-            with torch.amp.autocast('cuda'):
+            with autocast():
                 outputs = model(**inputs, labels=inputs["input_ids"])
-                
-                # Get original loss for logging
-                with torch.no_grad():
-                    original_output = model.model(**inputs, labels=inputs["input_ids"])
-                
-                # Scale losses for gradient accumulation
                 loss = outputs.loss / accumulation_steps
-                original_loss = original_output.loss / accumulation_steps
-                time_loss = model.last_time_loss
+                
+                # Add attention penalty to the loss
+                attention_penalty = sum(module.attention_penalty 
+                                     for module in model.modules() 
+                                     if isinstance(module, DuoAttention))
+                loss = loss + attention_penalty
 
-            if i % 10 == 0:
-                print(f"Epoch {epoch}, Step {i}, "
-                      f"Total Loss: {loss.item():.4f}, "
-                      f"Original Loss: {original_loss.item():.4f}, "
-                      f"Time Loss: {time_loss:.4f}")
-
-            #scaler.scale(loss).backward()
             loss.backward()
 
             if (i + 1) % accumulation_steps == 0:
@@ -191,6 +133,9 @@ for epoch in range(4):
                 lr_scheduler.step()
                 #scaler.update()
                 optimizer.zero_grad()
+
+            if i % 10 == 0:
+                print(f"Epoch {epoch}, Step {i}, Loss: {loss.item()}, attention penalty: {attention_penalty.item()}")
 
         except RuntimeError as e:
             if "out of memory" in str(e) or "invalid argument" in str(e):
@@ -208,9 +153,9 @@ for epoch in range(4):
 print("Training completed.")
 
 if mask:
-    output_dir = "./trained_model_duo_timed"
+    output_dir = "./trained_model_duo"
 else:
-    output_dir_no_mask = "./trained_model_no_mask_duo_timed"
+    output_dir_no_mask = "./trained_model_no_mask_duo"
 
 model.save_pretrained(output_dir)
 tokenizer.save_pretrained(output_dir)
