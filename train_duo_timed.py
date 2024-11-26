@@ -110,9 +110,11 @@ model.train()
 @contextmanager
 def timer():
     start = time.perf_counter()
-    yield
-    end = time.perf_counter()
-    return end - start
+    try:
+        yield start
+    finally:
+        end = time.perf_counter()
+        elapsed_time = end - start
 
 class TimedForwardModel(nn.Module):
     def __init__(self, model, inference_weight=0.01, target_time=0.1):
@@ -123,8 +125,9 @@ class TimedForwardModel(nn.Module):
     
     def forward(self, **inputs):
         # Time the forward pass
-        with timer() as forward_time:
-            outputs = self.model(**inputs)
+        start_time = time.perf_counter()
+        outputs = self.model(**inputs)
+        forward_time = time.perf_counter() - start_time
         
         # Add timing penalty to loss
         if isinstance(outputs, tuple):
@@ -133,10 +136,9 @@ class TimedForwardModel(nn.Module):
             original_loss = outputs.loss
             
         # Compute time penalty (using smooth L1 loss for stability)
-        time_penalty = F.smooth_l1_loss(
-            torch.tensor(forward_time, device=original_loss.device),
-            torch.tensor(self.target_time, device=original_loss.device)
-        )
+        time_tensor = torch.tensor(forward_time, device=original_loss.device, dtype=torch.float32)
+        target_tensor = torch.tensor(self.target_time, device=original_loss.device, dtype=torch.float32)
+        time_penalty = F.smooth_l1_loss(time_tensor, target_tensor)
         
         # Combine losses
         total_loss = original_loss + self.inference_weight * time_penalty
@@ -157,7 +159,7 @@ for epoch in range(4):
         try:
             inputs = {key: val.to(device) for key, val in batch.items()}
             
-            with autocast():
+            with torch.amp.autocast('cuda'):
                 outputs = model(**inputs, labels=inputs["input_ids"])
                 loss = outputs.loss / accumulation_steps
                 
