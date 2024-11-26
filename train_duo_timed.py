@@ -117,12 +117,13 @@ def timer():
         elapsed_time = end - start
 
 class TimedForwardModel(nn.Module):
-    def __init__(self, model, inference_weight=0.01, target_time=0.1):
+    def __init__(self, model, inference_weight=1.0, target_time=0.1):
         super().__init__()
         self.model = model
         self.inference_weight = inference_weight
         self.target_time = target_time
-    
+        self.last_time_loss = None
+
     def forward(self, **inputs):
         # Time the forward pass
         start_time = time.perf_counter()
@@ -143,6 +144,9 @@ class TimedForwardModel(nn.Module):
         # Combine losses
         total_loss = original_loss + self.inference_weight * time_penalty
         
+        # Save time loss for external access
+        self.last_time_loss = time_penalty.item()
+        
         if hasattr(outputs, '_replace'):  # For named tuples
             outputs = outputs._replace(loss=total_loss)
         else:  # For other objects
@@ -161,11 +165,21 @@ for epoch in range(4):
             
             with torch.amp.autocast('cuda'):
                 outputs = model(**inputs, labels=inputs["input_ids"])
-                loss = outputs.loss / accumulation_steps
                 
                 # Get original loss for logging
-                original_loss = outputs.loss - loss.item()
-                time_loss = loss.item() - original_loss
+                with torch.no_grad():
+                    original_output = model.model(**inputs, labels=inputs["input_ids"])
+                
+                # Scale losses for gradient accumulation
+                loss = outputs.loss / accumulation_steps
+                original_loss = original_output.loss / accumulation_steps
+                time_loss = model.last_time_loss
+
+            if i % 10 == 0:
+                print(f"Epoch {epoch}, Step {i}, "
+                      f"Total Loss: {loss.item():.4f}, "
+                      f"Original Loss: {original_loss.item():.4f}, "
+                      f"Time Loss: {time_loss:.4f}")
 
             #scaler.scale(loss).backward()
             loss.backward()
@@ -177,10 +191,6 @@ for epoch in range(4):
                 lr_scheduler.step()
                 #scaler.update()
                 optimizer.zero_grad()
-
-            if i % 10 == 0:
-                print(f"Epoch {epoch}, Step {i}, Total Loss: {loss.item():.4f}, "
-                      f"Original Loss: {original_loss:.4f}, Time Loss: {time_loss:.4f}")
 
         except RuntimeError as e:
             if "out of memory" in str(e) or "invalid argument" in str(e):
