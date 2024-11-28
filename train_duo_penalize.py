@@ -135,7 +135,7 @@ for epoch in range(4):
                 optimizer.zero_grad()
 
             if i % 10 == 0:
-                print(f"Epoch {epoch}, Step {i}, Loss: {loss.item()}, attention penalty: {attention_penalty.item()}")
+                print(f"Epoch {epoch}, Step {i}, Loss: {loss.item()}, attention penalty: {attention_penalty}")
 
         except RuntimeError as e:
             if "out of memory" in str(e) or "invalid argument" in str(e):
