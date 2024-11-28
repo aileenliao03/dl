@@ -5,6 +5,7 @@ import torch
 import torch.nn as nn
 from torch.cuda.amp import autocast, GradScaler
 from transformers import get_scheduler
+from transformers.models.llama.modeling_llama import LlamaAttention
 
 mask = True
 tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-1B")
@@ -50,14 +51,18 @@ class DuoAttention(nn.Module):
         return output
 
 def replace_attention_with_masking(model):
+    replacement_count = 0
     for name, module in model.named_modules():
-        if isinstance(module, nn.MultiheadAttention):
+        if isinstance(module, LlamaAttention):
             print(f"Replacing attention module: {name}")
             hierarchical_attention = DuoAttention(module)
             parent_name = ".".join(name.split(".")[:-1])
             module_name = name.split(".")[-1]
             parent = dict(model.named_modules())[parent_name]
             setattr(parent, module_name, hierarchical_attention)
+            replacement_count += 1
+    
+    print(f"Replaced {replacement_count} attention modules")
     return model
 
 if mask:
