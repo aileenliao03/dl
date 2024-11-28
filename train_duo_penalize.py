@@ -27,14 +27,15 @@ class DuoAttention(nn.Module):
         )
         # Add penalty coefficient as a parameter
         self.penalty_coefficient = 0.1
+        self.attention_penalty = None
 
     def forward(self, query, key, value, attention_mask=None):
         # Get mask choice from last query vector
         last_query = query[:, -1]  # Shape: [batch_size, hidden_dim]
         mask_choice = self.mask_mlp(last_query)  # Shape: [batch_size, 1]
         
-        # Add penalty term for high mask values
-        attention_penalty = self.penalty_coefficient * torch.mean(mask_choice)
+        # Calculate and store the penalty
+        self.attention_penalty = self.penalty_coefficient * torch.mean(mask_choice)
         
         # Original attention
         full_output = self.base_attention(query, key, value, attn_mask=attention_mask)[0]
@@ -52,7 +53,7 @@ class DuoAttention(nn.Module):
         output = torch.where(mask_choice < 0.1, 
                            (1 - mask_choice) * local_output,
                            mask_choice * full_output + (1 - mask_choice) * local_output)
-        return output, attention_penalty
+        return output
 
 def replace_attention_with_masking(model):
     for name, module in model.named_modules():
@@ -118,10 +119,12 @@ for epoch in range(4):
                 outputs = model(**inputs, labels=inputs["input_ids"])
                 loss = outputs.loss / accumulation_steps
                 
-                # Add attention penalty to the loss
-                attention_penalty = sum(module.attention_penalty 
-                                     for module in model.modules() 
-                                     if isinstance(module, DuoAttention))
+                # Calculate total attention penalty
+                attention_penalty = torch.tensor(0.0, device=device)
+                for module in model.modules():
+                    if isinstance(module, DuoAttention) and module.attention_penalty is not None:
+                        attention_penalty += module.attention_penalty
+                
                 loss = loss + attention_penalty
 
             loss.backward()
