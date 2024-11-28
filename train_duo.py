@@ -6,7 +6,7 @@ import torch.nn as nn
 from torch.cuda.amp import autocast, GradScaler
 from transformers import get_scheduler
 
-mask = True
+mask = False
 tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-1B")
 tokenizer.pad_token = tokenizer.eos_token
 model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-3.2-1B")
@@ -146,7 +146,7 @@ print("Training completed.")
 if mask:
     output_dir = "./trained_model_duo"
 else:
-    output_dir_no_mask = "./trained_model_no_mask_duo"
+    output_dir = "./trained_model_no_mask_duo"
 
 model.save_pretrained(output_dir)
 tokenizer.save_pretrained(output_dir)
