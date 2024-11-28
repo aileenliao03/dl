@@ -58,6 +58,7 @@ class DuoAttention(nn.Module):
 def replace_attention_with_masking(model):
     for name, module in model.named_modules():
         if isinstance(module, nn.MultiheadAttention):
+            
             print(f"Replacing attention module: {name}")
             hierarchical_attention = DuoAttention(module)
             parent_name = ".".join(name.split(".")[:-1])

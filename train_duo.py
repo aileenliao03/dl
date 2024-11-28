@@ -6,7 +6,7 @@ import torch.nn as nn
 from torch.cuda.amp import autocast, GradScaler
 from transformers import get_scheduler
 
-mask = False
+mask = True
 tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-1B")
 tokenizer.pad_token = tokenizer.eos_token
 model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-3.2-1B")
