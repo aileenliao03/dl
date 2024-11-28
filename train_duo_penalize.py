@@ -122,6 +122,7 @@ for epoch in range(4):
                 # Calculate total attention penalty
                 attention_penalty = torch.tensor(0.0, device=device)
                 for module in model.modules():
+                    breakpoint()
                     if isinstance(module, DuoAttention) and module.attention_penalty is not None:
                         attention_penalty += module.attention_penalty
                 
@@ -138,7 +139,7 @@ for epoch in range(4):
                 optimizer.zero_grad()
 
             if i % 10 == 0:
-                print(f"Epoch {epoch}, Step {i}, Loss: {loss.item()}, attention penalty: {attention_penalty}")
+                print(f"Epoch {epoch}, Step {i}, Loss: {loss.item()}, attention penalty: {attention_penalty.item()}")
 
         except RuntimeError as e:
             if "out of memory" in str(e) or "invalid argument" in str(e):
@@ -156,9 +157,9 @@ for epoch in range(4):
 print("Training completed.")
 
 if mask:
-    output_dir = "./trained_model_duo"
+    output_dir = "./trained_model_duo_penalized"
 else:
-    output_dir_no_mask = "./trained_model_no_mask_duo"
+    output_dir = "./trained_model_no_mask_duo_penalized"
 
 model.save_pretrained(output_dir)
 tokenizer.save_pretrained(output_dir)
