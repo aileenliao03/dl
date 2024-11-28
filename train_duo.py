@@ -18,14 +18,16 @@ class DuoAttention(nn.Module):
         self.base_attention = base_attention
         self.window_size = window_size
         
-        # Get hidden dim from base attention
-        hidden_dim = base_attention.embed_dim
+        # Get hidden dim from base attention (LLaMA uses hidden_size)
+        hidden_dim = base_attention.hidden_size
         
-        # Simple MLP with one layer and leaky ReLU
+        # Simple MLP with one layer and sigmoid
         self.mask_mlp = nn.Sequential(
             nn.Linear(hidden_dim, 1),
             nn.Sigmoid()
         )
+        self.penalty_coefficient = 0.1
+        self.attention_penalty = None
 
     def forward(self, query, key, value, attention_mask=None):
         # Get mask choice from last query vector
