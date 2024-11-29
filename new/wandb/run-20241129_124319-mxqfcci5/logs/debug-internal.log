@@ -1,0 +1,16 @@
+{"time":"2024-11-29T12:43:19.748056942-05:00","level":"INFO","msg":"using version","core version":"0.18.7"}
+{"time":"2024-11-29T12:43:19.748070813-05:00","level":"INFO","msg":"created symlink","path":"/home/aileen/dl/new/wandb/run-20241129_124319-mxqfcci5/logs/debug-core.log"}
+{"time":"2024-11-29T12:43:19.852937958-05:00","level":"INFO","msg":"created new stream","id":"mxqfcci5"}
+{"time":"2024-11-29T12:43:19.85299754-05:00","level":"INFO","msg":"stream: started","id":"mxqfcci5"}
+{"time":"2024-11-29T12:43:19.853170515-05:00","level":"INFO","msg":"handler: started","stream_id":"mxqfcci5"}
+{"time":"2024-11-29T12:43:19.853422104-05:00","level":"INFO","msg":"writer: Do: started","stream_id":"mxqfcci5"}
+{"time":"2024-11-29T12:43:19.853424594-05:00","level":"INFO","msg":"sender: started","stream_id":"mxqfcci5"}
+{"time":"2024-11-29T12:43:20.12316126-05:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-11-29T12:43:57.512948135-05:00","level":"INFO","msg":"stream: closing","id":"mxqfcci5"}
+{"time":"2024-11-29T12:43:57.512960242-05:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-11-29T12:43:57.513249097-05:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-11-29T12:43:58.57297764-05:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-11-29T12:43:58.682045585-05:00","level":"INFO","msg":"handler: closed","stream_id":"mxqfcci5"}
+{"time":"2024-11-29T12:43:58.682089858-05:00","level":"INFO","msg":"writer: Close: closed","stream_id":"mxqfcci5"}
+{"time":"2024-11-29T12:43:58.682135769-05:00","level":"INFO","msg":"sender: closed","stream_id":"mxqfcci5"}
+{"time":"2024-11-29T12:43:58.682247448-05:00","level":"INFO","msg":"stream: closed","id":"mxqfcci5"}

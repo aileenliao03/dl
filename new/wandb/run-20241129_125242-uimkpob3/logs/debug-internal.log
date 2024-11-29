@@ -1,0 +1,8 @@
+{"time":"2024-11-29T12:52:42.345581498-05:00","level":"INFO","msg":"using version","core version":"0.18.7"}
+{"time":"2024-11-29T12:52:42.34558893-05:00","level":"INFO","msg":"created symlink","path":"/home/aileen/dl/new/wandb/run-20241129_125242-uimkpob3/logs/debug-core.log"}
+{"time":"2024-11-29T12:52:42.44982244-05:00","level":"INFO","msg":"created new stream","id":"uimkpob3"}
+{"time":"2024-11-29T12:52:42.449880395-05:00","level":"INFO","msg":"stream: started","id":"uimkpob3"}
+{"time":"2024-11-29T12:52:42.449997789-05:00","level":"INFO","msg":"writer: Do: started","stream_id":"uimkpob3"}
+{"time":"2024-11-29T12:52:42.450048955-05:00","level":"INFO","msg":"handler: started","stream_id":"uimkpob3"}
+{"time":"2024-11-29T12:52:42.450095267-05:00","level":"INFO","msg":"sender: started","stream_id":"uimkpob3"}
+{"time":"2024-11-29T12:52:42.68645687-05:00","level":"INFO","msg":"Starting system monitor"}
