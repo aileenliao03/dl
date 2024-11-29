@@ -7,8 +7,8 @@ import math
 import time
 
 # Paths to fine-tuned model and baseline
-fine_tuned_model_path = "./trained_model_duo" #trained_model_no_mask
-baseline_model_path = "meta-llama/Llama-3.2-1B"
+fine_tuned_model_path = "./trained_model_duo_sliding"  # Path to your fine-tuned model
+baseline_model_path = "meta-llama/Llama-3.2-1B"  # Baseline model path
 
 # Load tokenizer and models
 tokenizer = AutoTokenizer.from_pretrained(fine_tuned_model_path)
@@ -24,9 +24,9 @@ baseline_model.to(device)
 dataset = load_dataset("wikitext", "wikitext-103-raw-v1")
 val_data = dataset["validation"].select(range(100))  # Use 100 samples for evaluation
 prompts = [prompt for prompt in val_data["text"] if prompt.strip()]  # Filter out empty strings
+max_length = 512
 
-# Generate responses
-def generate_responses(prompts, model, tokenizer, max_length=50):
+def generate_responses(prompts, model, tokenizer, max_length=512):
     model.eval()
     responses = []
     start_time = time.time()
@@ -40,19 +40,6 @@ def generate_responses(prompts, model, tokenizer, max_length=50):
     avg_time_per_response = total_time / len(prompts)
     return responses, avg_time_per_response
 
-# Generate responses from both models
-fine_tuned_responses, fine_tuned_time = generate_responses(prompts, fine_tuned_model, tokenizer)
-baseline_responses, baseline_time = generate_responses(prompts, baseline_model, tokenizer)
-
-# Save responses for analysis
-with open("evaluation_results.txt", "w") as f:
-    for i, prompt in enumerate(prompts):
-        f.write(f"Prompt: {prompt}\n")
-        f.write(f"Fine-Tuned Response: {fine_tuned_responses[i]}\n")
-        f.write(f"Baseline Response: {baseline_responses[i]}\n")
-        f.write("-" * 80 + "\n")
-
-# Perplexity calculation
 def calculate_perplexity(model, tokenizer, texts, batch_size=8, max_length=512):
     model.eval()
     total_loss = 0
@@ -67,6 +54,19 @@ def calculate_perplexity(model, tokenizer, texts, batch_size=8, max_length=512):
             total_tokens += inputs["input_ids"].numel()
     perplexity = math.exp(total_loss / total_tokens)
     return perplexity
+
+
+# Generate responses from both models
+fine_tuned_responses, fine_tuned_time = generate_responses(prompts, fine_tuned_model, tokenizer)
+baseline_responses, baseline_time = generate_responses(prompts, baseline_model, tokenizer)
+
+# Save responses for analysis
+with open("evaluation_results.txt", "w") as f:
+    for i, prompt in enumerate(prompts):
+        f.write(f"Prompt: {prompt}\n")
+        f.write(f"Fine-Tuned Response: {fine_tuned_responses[i]}\n")
+        f.write(f"Baseline Response: {baseline_responses[i]}\n")
+        f.write("-" * 80 + "\n")
 
 # Calculate perplexity for both models
 fine_tuned_perplexity = calculate_perplexity(fine_tuned_model, tokenizer, prompts)
@@ -103,4 +103,3 @@ print(f"Fine-Tuned Model ROUGE: {fine_tuned_rouge}")
 print(f"Baseline Model ROUGE: {baseline_rouge}")
 print(f"Fine-Tuned Avg Inference Time: {fine_tuned_time:.4f} seconds per response")
 print(f"Baseline Avg Inference Time: {baseline_time:.4f} seconds per response")
-
