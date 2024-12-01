@@ -7,8 +7,8 @@ import math
 import time
 
 # Paths to fine-tuned model and baseline
-fine_tuned_model_path = "./trained_model_duo" #trained_model_no_mask
-baseline_model_path = "meta-llama/Llama-3.2-1B"
+fine_tuned_model_path = "./trained_model_duo_gate" #trained_model_no_mask
+baseline_model_path = "./trained_model_no_mask_duo"
 
 # Load tokenizer and models
 tokenizer = AutoTokenizer.from_pretrained(fine_tuned_model_path)

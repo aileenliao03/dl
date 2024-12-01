@@ -13,8 +13,11 @@ from typing import Optional, Tuple
 import math
 import torch.nn.functional as F
 #import wandb
+import os
+import json
+import dill
 
-mask = False
+mask = True
 tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-1B")
 tokenizer.pad_token = tokenizer.eos_token
 model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-3.2-1B")
@@ -52,6 +55,34 @@ class GatedDuoAttention(nn.Module):
         self.v_proj.weight.data.copy_(base_attention.v_proj.weight.data)
         self.o_proj.weight.data.copy_(base_attention.o_proj.weight.data)
 
+        # Pre-compute masks for maximum sequence length (usually 2048 for Llama)
+        max_seq_len = 2048  # or whatever your maximum sequence length is
+        self.max_seq_len = max_seq_len
+        
+        # Register masks as buffers so they're automatically moved to the right device
+        self.register_buffer(
+            "causal_mask",
+            torch.triu(
+                torch.ones(1, 1, max_seq_len, max_seq_len) * float("-inf"),
+                diagonal=1
+            )
+        )
+        
+        self.register_buffer(
+            "local_window_mask",
+            self._create_local_window_mask(max_seq_len)
+        )
+
+    def _create_local_window_mask(self, seq_len: int) -> torch.Tensor:
+        local_window_mask = torch.ones(1, 1, seq_len, seq_len) * float("-inf")
+        window_size = min(seq_len, self.window_size)
+        
+        for i in range(seq_len):
+            start = max(0, i - window_size // 2)
+            end = min(seq_len, i + window_size // 2 + 1)
+            local_window_mask[:, :, i, start:end] = 0
+        return local_window_mask
+
     def forward(
         self,
         hidden_states: torch.Tensor,
@@ -88,9 +119,9 @@ class GatedDuoAttention(nn.Module):
         gate_binary = gate_binary.expand(bsz, self.num_heads, q_len, q_len)
         #breakpoint()
 
-        # Create masks
-        causal_mask = create_causal_mask(bsz, self.num_heads, q_len, hidden_states.device)
-        local_window_mask = create_local_window_mask(bsz, self.num_heads, self.window_size, q_len, hidden_states.device)
+        # Use pre-computed masks and slice to current sequence length
+        causal_mask = self.causal_mask[:, :, :q_len, :q_len].expand(bsz, self.num_heads, -1, -1)
+        local_window_mask = self.local_window_mask[:, :, :q_len, :q_len].expand(bsz, self.num_heads, -1, -1)
 
         # Combine masks
         combined_mask = torch.where(gate_binary == 1, local_window_mask, causal_mask)
@@ -276,8 +307,36 @@ if __name__ == "__main__":
         print(f"Epoch {epoch}, Validation Loss: {val_loss}")
 
 
-    model.save_pretrained(output_dir, safe_serialization=True)
-    tokenizer.save_pretrained(output_dir, safe_serialization=True)
-    print(f"Model and tokenizer saved to {output_dir}")
+    # At the end of training:
+    if mask:
+        output_dir = "./trained_model_duo_gate_new"
+    else:
+        output_dir = "./trained_model_no_mask_duo_gate_new"
+    
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # Save model config
+    model_config = {
+        'mask': mask,
+        'window_size': 128,
+        'reduction_factor': 4,
+        'base_model_name': "meta-llama/Llama-3.2-1B",
+    }
+    
+    # Save config as JSON
+    with open(os.path.join(output_dir, "config.json"), "w") as f:
+        json.dump(model_config, f, indent=2)
+    
+    # Save model state dict separately
+    torch.save(
+        model.state_dict(),
+        os.path.join(output_dir, "pytorch_model.pt"),
+        pickle_module=dill,
+    )
+
+    
+    # Save tokenizer
+    tokenizer.save_pretrained(output_dir)
+    print(f"Model, config, and tokenizer saved to {output_dir}")
 
 

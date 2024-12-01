@@ -5,20 +5,53 @@ from rouge_score import rouge_scorer
 import torch
 import math
 import time
+import os
+import json
+import dill
+from train_duo_gate import (
+    GatedDuoAttention,
+    create_causal_mask,
+    create_local_window_mask,
+    replace_attention_with_masking
+)
 
 # Paths to fine-tuned model and baseline
-fine_tuned_model_path = "./trained_model_duo_gate"  # Path to your fine-tuned model
+fine_tuned_model_path = "./trained_model_duo_gate_new"  # Path to your fine-tuned model
 baseline_model_path = "./trained_model_no_mask_duo"  # Baseline model path
 
-# Load tokenizer and models
-tokenizer = AutoTokenizer.from_pretrained(fine_tuned_model_path)
-fine_tuned_model = AutoModelForCausalLM.from_pretrained(fine_tuned_model_path)
-baseline_model = AutoModelForCausalLM.from_pretrained(baseline_model_path)
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# Load config first
+with open(os.path.join(fine_tuned_model_path, "config.json"), "r") as f:
+    config = json.load(f)
+
+# Load base model and tokenizer
+tokenizer = AutoTokenizer.from_pretrained(config['base_model_name'])
+tokenizer.pad_token = tokenizer.eos_token  # Set padding token to be the EOS token
+model = AutoModelForCausalLM.from_pretrained(config['base_model_name'])
+
+# Apply custom attention if this was a masked model
+if config['mask']:
+    model = replace_attention_with_masking(model)
+# Load the state dict
+state_dict = torch.load(
+    os.path.join(fine_tuned_model_path, "pytorch_model.pt"),
+    map_location=device,
+    pickle_module=dill
+)
+filtered_state_dict = {
+    key: value for key, value in state_dict.items()
+    if "causal_mask" not in key and "local_window_mask" not in key
+}
+
+# Load the state dict into the model
+model.load_state_dict(filtered_state_dict)
+fine_tuned_model = model.to(device)
+
+# Load baseline model normally
+baseline_model = AutoModelForCausalLM.from_pretrained(baseline_model_path).to(device)
 
 # Set device
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-fine_tuned_model.to(device)
-baseline_model.to(device)
 
 # Load validation dataset
 dataset = load_dataset("wikitext", "wikitext-103-raw-v1")
@@ -44,14 +77,27 @@ def calculate_perplexity(model, tokenizer, texts, batch_size=8, max_length=512):
     model.eval()
     total_loss = 0
     total_tokens = 0
+    
+    # Make sure model knows about pad token
+    if model.config.pad_token_id is None:
+        model.config.pad_token_id = tokenizer.pad_token_id
+    
     for i in range(0, len(texts), batch_size):
         batch_texts = texts[i:i + batch_size]
-        inputs = tokenizer(batch_texts, return_tensors="pt", truncation=True, padding=True, max_length=max_length).to(device)
+        inputs = tokenizer(
+            batch_texts, 
+            return_tensors="pt", 
+            truncation=True, 
+            padding=True, 
+            max_length=max_length
+        ).to(device)
+        
         with torch.no_grad():
             outputs = model(**inputs, labels=inputs["input_ids"])
             loss = outputs.loss.item()
             total_loss += loss * inputs["input_ids"].numel()
             total_tokens += inputs["input_ids"].numel()
+    
     perplexity = math.exp(total_loss / total_tokens)
     return perplexity
 
