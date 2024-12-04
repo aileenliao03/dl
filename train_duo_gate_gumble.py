@@ -17,7 +17,6 @@ import os
 import json
 import dill
 
-
 class GatedDuoAttention(nn.Module):
     def __init__(self, base_attention: nn.Module, window_size: int = 128, reduction_factor: int = 4, use_local_mask: bool = True):
         super().__init__()
@@ -113,30 +112,48 @@ class GatedDuoAttention(nn.Module):
         value_states = value_states.repeat(1, self.reduction_factor, 1, 1)
 
         # Apply gating - reshape gates to match attention dimensions
-        gate_binary = (gates <= self.gate_threshold).float()
-        gate_binary = gate_binary.squeeze(-1).unsqueeze(1).unsqueeze(-1)
-        gate_binary = gate_binary.expand(bsz, self.num_heads, q_len, q_len)
-        #breakpoint()
+        gates = gates.squeeze(-1)  # [bsz, q_len]
+
 
         # Use pre-computed masks and slice to current sequence length
         causal_mask = self.causal_mask[:, :, :q_len, :q_len].expand(bsz, self.num_heads, -1, -1)
+        local_window_mask = self.local_window_mask[:, :, :q_len, :q_len].expand(bsz, self.num_heads, -1, -1)
         scores = torch.matmul(query_states, key_states.transpose(-2, -1))
         scores = scores / math.sqrt(self.head_dim)
 
         if self.use_local_mask:
-            local_window_mask = self.local_window_mask[:, :, :q_len, :q_len].expand(bsz, self.num_heads, -1, -1)
-            # Combine masks based on gate
-            combined_mask = torch.where(gate_binary == 1, local_window_mask, causal_mask)
-            scores = scores + combined_mask
+    # Compute local and global attention scores
+            local_scores = scores + local_window_mask
+            global_scores = scores + causal_mask
+
+            # Stack gates for Gumbel-Softmax as logits
+            logits = torch.cat([gates, 1 - gates], dim=-1)  # Shape: [bsz, q_len* 2]
+
+            # Sample Gumbel weights using gates as logits
+            gumbel_weights = gumbel_softmax(logits, tau=0.1, hard=False)  # Shape: [bsz, q_len* 2]
+
+            # Expand weights to match attention dimensions
+            gumbel_weights = gumbel_weights.unsqueeze(1).unsqueeze(3)  # [bsz, 1, q_len*2, 1 ]
+            gumbel_weights = gumbel_weights.expand(-1, self.num_heads, -1, q_len)  # [bsz, num_heads, q_len*2, q_len]
+            gumbel_weights = gumbel_weights.view(bsz, self.num_heads, q_len, 2, q_len).permute(0, 1, 2, 4, 3)
+
+
+            # Compute local and global attention probabilities
+            local_attn_probs = F.softmax(local_scores.float(), dim=-1, dtype=torch.float32).to(scores.dtype)
+            global_attn_probs = F.softmax(global_scores.float(), dim=-1, dtype=torch.float32).to(scores.dtype)
+
+            # Combine local and global attention based on Gumbel-Softmax weights
+            attn_probs = (
+                gumbel_weights[..., 0] * local_attn_probs + gumbel_weights[..., 1] * global_attn_probs
+            )
         else:
-            # Just use causal mask
+            # Only global causal attention
             scores = scores + causal_mask
+            attn_probs = F.softmax(scores.float(), dim=-1, dtype=torch.float32).to(scores.dtype)
+
+
 
         # Compute attention scores
-        
-
-        # Use stable softmax
-        attn_probs = F.softmax(scores.float(), dim=-1, dtype=torch.float32).to(scores.dtype)
         
         # Apply attention
         attn_output = torch.matmul(attn_probs, value_states)
@@ -150,19 +167,19 @@ class GatedDuoAttention(nn.Module):
         eps = 1e-5
         gates_stable = gates.clamp(eps, 1-eps)
         
-        # Binary regularization to prevent gates from being exactly 0 or 1
-        binary_reg = self.gate_reg_strength * torch.mean(gates * (1 - gates))
+        # Binary regularization to encourage gates to be close to 0 or 1
+        binary_reg = -self.gate_reg_strength * torch.mean(gates * (1 - gates))  # Note the negative sign
         
-        # Entropy regularization for uncertainty
+        # Entropy regularization for uncertainty (reduced weight)
         entropy_reg = -0.01 * torch.mean(
             gates * torch.log(gates_stable) + 
             (1 - gates) * torch.log(1 - gates_stable)
         )
         
-        # L1 regularization to encourage sparsity (smaller gates)
-        sparsity_reg = 0.4 * torch.mean(gates)  # Added this term to push gates toward 0
+        # L1 regularization to encourage sparsity (stronger weight)
+        sparsity_reg = 0.4 * torch.mean(gates)  # Push gates toward 0
         
-        # Combined loss that prefers local attention
+        # Combined loss that prefers binary gates
         reg_loss = binary_reg + entropy_reg + sparsity_reg
 
         # Store statistics
@@ -200,7 +217,27 @@ def replace_attention_with_masking(model, use_local_mask=True):
             setattr(parent, module_name, hierarchical_attention)
     return model
 
+def sample_gumbel(shape, device, eps=1e-20):
+    """
+    Sample from the Gumbel distribution.
+    """
+    U = torch.rand(shape, device=device)
+    return -torch.log(-torch.log(U + eps) + eps)
 
+def gumbel_softmax(logits, tau=1.0, hard=False):
+    """
+    Apply the Gumbel-Softmax trick.
+    """
+    gumbels = sample_gumbel(logits.size(), logits.device)
+    y = logits + gumbels
+    y_soft = F.softmax(y / tau, dim=-1)
+    if hard:
+        # Straight-through estimation: replace gradients with softmax gradients
+        index = y_soft.max(dim=-1, keepdim=True)[1]
+        y_hard = torch.zeros_like(logits).scatter_(-1, index, 1.0)
+        return (y_hard - y_soft).detach() + y_soft
+    else:
+        return y_soft
 
 dataset = load_dataset("wikitext", "wikitext-103-raw-v1")
 train_data = dataset["train"].select(range(10000))
@@ -257,9 +294,9 @@ if __name__ == "__main__":
     #wandb.init(project="llama-gated-attention")
 
     if mask:
-        output_dir = "./trained_model_duo_gate_0.4"
+        output_dir = "./trained_model_duo_gate_gumble"
     else:
-        output_dir = "./trained_model_no_mask_duo_gate_0.4"
+        output_dir = "./trained_model_no_mask_duo_gate_gumble"
     print(output_dir)
 
 

@@ -8,7 +8,7 @@ import time
 import os
 import json
 import dill
-from train_duo_gate import (
+from train_duo_gate_diff import (
     GatedDuoAttention,
     create_causal_mask,
     create_local_window_mask,
@@ -16,40 +16,52 @@ from train_duo_gate import (
 )
 
 # Paths to fine-tuned model and baseline
-fine_tuned_model_path = "./trained_model_duo_gate_new"  # Path to your fine-tuned model
-baseline_model_path = "./trained_model_no_mask_duo"  # Baseline model path
+baseline_model_path = "./trained_model_duo_gate_diff"  # Path to your fine-tuned model
+fine_tuned_model_path = "./trained_model_no_mask_duo_gate_diff"  # Baseline model path
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Load config first
 with open(os.path.join(fine_tuned_model_path, "config.json"), "r") as f:
     config = json.load(f)
-
 # Load base model and tokenizer
 tokenizer = AutoTokenizer.from_pretrained(config['base_model_name'])
 tokenizer.pad_token = tokenizer.eos_token  # Set padding token to be the EOS token
-model = AutoModelForCausalLM.from_pretrained(config['base_model_name'])
-
+fine_tuned_model = AutoModelForCausalLM.from_pretrained(config['base_model_name'])
 # Apply custom attention if this was a masked model
-if config['mask']:
-    model = replace_attention_with_masking(model)
+fine_tuned_model = replace_attention_with_masking(fine_tuned_model, config['use_local_mask'])
 # Load the state dict
 state_dict = torch.load(
     os.path.join(fine_tuned_model_path, "pytorch_model.pt"),
     map_location=device,
     pickle_module=dill
 )
-filtered_state_dict = {
-    key: value for key, value in state_dict.items()
-    if "causal_mask" not in key and "local_window_mask" not in key
-}
+#print(state_dict.items())
+#filtered_state_dict = {
+#    key: value for key, value in state_dict.items()
+#    if "causal_mask" not in key and "local_window_mask" not in key
+#}
 
 # Load the state dict into the model
-model.load_state_dict(filtered_state_dict)
-fine_tuned_model = model.to(device)
+fine_tuned_model.load_state_dict(state_dict)
+fine_tuned_model = fine_tuned_model.to(device)
 
 # Load baseline model normally
-baseline_model = AutoModelForCausalLM.from_pretrained(baseline_model_path).to(device)
+baseline_model = AutoModelForCausalLM.from_pretrained(config['base_model_name'])
+with open(os.path.join(baseline_model_path, "config.json"), "r") as f:
+    config = json.load(f)
+
+baseline_model = replace_attention_with_masking(baseline_model, True)
+# Load the state dict
+state_dict1 = torch.load(
+    os.path.join(baseline_model_path, "pytorch_model.pt"),
+    map_location=device,
+    pickle_module=dill
+)
+
+# Load the state dict into the model
+baseline_model.load_state_dict(state_dict1)
+baseline_model = baseline_model.to(device)
 
 # Set device
 
@@ -59,17 +71,30 @@ val_data = dataset["validation"].select(range(100))  # Use 100 samples for evalu
 prompts = [prompt for prompt in val_data["text"] if prompt.strip()]  # Filter out empty strings
 max_length = 512
 
-def generate_responses(prompts, model, tokenizer, max_length=512):
+def generate_responses(prompts, model, tokenizer, max_length=512, batch_size=8):
     model.eval()
     responses = []
-    start_time = time.time()
-    for prompt in prompts:
-        inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=max_length).to(device)
+    total_time = 0
+    
+    for i in range(0, len(prompts), batch_size):
+        batch_prompts = prompts[i:min(i + batch_size, len(prompts))]
+        inputs = tokenizer(
+            batch_prompts, 
+            return_tensors="pt", 
+            truncation=True, 
+            padding=True,
+            max_length=max_length
+        ).to(device)
+        
+        start_time = time.time()
         with torch.no_grad():
             outputs = model.generate(**inputs, max_new_tokens=max_length)
-        response = tokenizer.decode(outputs[0], skip_special_tokens=True)
-        responses.append(response)
-    total_time = time.time() - start_time
+        batch_time = time.time() - start_time
+        total_time += batch_time
+        
+        batch_responses = tokenizer.batch_decode(outputs, skip_special_tokens=True)
+        responses.extend(batch_responses)
+    
     avg_time_per_response = total_time / len(prompts)
     return responses, avg_time_per_response
 
@@ -103,8 +128,8 @@ def calculate_perplexity(model, tokenizer, texts, batch_size=8, max_length=512):
 
 
 # Generate responses from both models
-fine_tuned_responses, fine_tuned_time = generate_responses(prompts, fine_tuned_model, tokenizer)
-baseline_responses, baseline_time = generate_responses(prompts, baseline_model, tokenizer)
+fine_tuned_responses, fine_tuned_time = generate_responses(prompts, fine_tuned_model, tokenizer, batch_size=8)
+baseline_responses, baseline_time = generate_responses(prompts, baseline_model, tokenizer, batch_size=8)
 
 # Save responses for analysis
 with open("evaluation_results.txt", "w") as f:

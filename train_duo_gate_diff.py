@@ -113,30 +113,35 @@ class GatedDuoAttention(nn.Module):
         value_states = value_states.repeat(1, self.reduction_factor, 1, 1)
 
         # Apply gating - reshape gates to match attention dimensions
-        gate_binary = (gates <= self.gate_threshold).float()
-        gate_binary = gate_binary.squeeze(-1).unsqueeze(1).unsqueeze(-1)
-        gate_binary = gate_binary.expand(bsz, self.num_heads, q_len, q_len)
-        #breakpoint()
+        gates = gates.squeeze(-1)  # [bsz, q_len]
+        gates = gates.unsqueeze(1).unsqueeze(-1)  # [bsz, 1, q_len, 1]
+        gates = gates.expand(-1, self.num_heads, -1, q_len)  # [bsz, num_heads, q_len, q_len]
 
         # Use pre-computed masks and slice to current sequence length
         causal_mask = self.causal_mask[:, :, :q_len, :q_len].expand(bsz, self.num_heads, -1, -1)
+        local_window_mask = self.local_window_mask[:, :, :q_len, :q_len].expand(bsz, self.num_heads, -1, -1)
         scores = torch.matmul(query_states, key_states.transpose(-2, -1))
         scores = scores / math.sqrt(self.head_dim)
 
         if self.use_local_mask:
-            local_window_mask = self.local_window_mask[:, :, :q_len, :q_len].expand(bsz, self.num_heads, -1, -1)
-            # Combine masks based on gate
-            combined_mask = torch.where(gate_binary == 1, local_window_mask, causal_mask)
-            scores = scores + combined_mask
+
+            # Compute local and global attention distributions separately
+            local_scores = scores + local_window_mask
+            global_scores = scores + causal_mask
+            
+            local_attn_probs = F.softmax(local_scores.float(), dim=-1, dtype=torch.float32).to(scores.dtype)
+            global_attn_probs = F.softmax(global_scores.float(), dim=-1, dtype=torch.float32).to(scores.dtype)
+            
+            # Interpolate between the two attention distributions
+            attn_probs = gates * local_attn_probs + (1 - gates) * global_attn_probs
+            #scores = scores + causal_mask
+            #attn_probs = F.softmax(scores.float(), dim=-1, dtype=torch.float32).to(scores.dtype)
         else:
             # Just use causal mask
             scores = scores + causal_mask
+            attn_probs = F.softmax(scores.float(), dim=-1, dtype=torch.float32).to(scores.dtype)
 
         # Compute attention scores
-        
-
-        # Use stable softmax
-        attn_probs = F.softmax(scores.float(), dim=-1, dtype=torch.float32).to(scores.dtype)
         
         # Apply attention
         attn_output = torch.matmul(attn_probs, value_states)
@@ -150,19 +155,19 @@ class GatedDuoAttention(nn.Module):
         eps = 1e-5
         gates_stable = gates.clamp(eps, 1-eps)
         
-        # Binary regularization to prevent gates from being exactly 0 or 1
-        binary_reg = self.gate_reg_strength * torch.mean(gates * (1 - gates))
+        # Binary regularization to encourage gates to be close to 0 or 1
+        binary_reg = -self.gate_reg_strength * torch.mean(gates * (1 - gates))  # Note the negative sign
         
-        # Entropy regularization for uncertainty
+        # Entropy regularization for uncertainty (reduced weight)
         entropy_reg = -0.01 * torch.mean(
             gates * torch.log(gates_stable) + 
             (1 - gates) * torch.log(1 - gates_stable)
         )
         
-        # L1 regularization to encourage sparsity (smaller gates)
-        sparsity_reg = 0.4 * torch.mean(gates)  # Added this term to push gates toward 0
+        # L1 regularization to encourage sparsity (stronger weight)
+        sparsity_reg = 0.4 * torch.mean(gates)  # Push gates toward 0
         
-        # Combined loss that prefers local attention
+        # Combined loss that prefers binary gates
         reg_loss = binary_reg + entropy_reg + sparsity_reg
 
         # Store statistics
@@ -223,7 +228,7 @@ def evaluate(model, dataloader):
     return total_loss / len(dataloader)
 
 if __name__ == "__main__":
-    mask = True
+    mask = False
     tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-1B")
     tokenizer.pad_token = tokenizer.eos_token
     model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-3.2-1B")
@@ -257,9 +262,9 @@ if __name__ == "__main__":
     #wandb.init(project="llama-gated-attention")
 
     if mask:
-        output_dir = "./trained_model_duo_gate_0.4"
+        output_dir = "./trained_model_duo_gate_diff"
     else:
-        output_dir = "./trained_model_no_mask_duo_gate_0.4"
+        output_dir = "./trained_model_no_mask_duo_gate_diff"
     print(output_dir)
 
 
