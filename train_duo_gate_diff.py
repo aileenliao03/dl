@@ -16,6 +16,10 @@ import torch.nn.functional as F
 import os
 import json
 import dill
+import csv
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 
 
 class GatedDuoAttention(nn.Module):
@@ -26,6 +30,10 @@ class GatedDuoAttention(nn.Module):
         self.num_heads = base_attention.num_heads
         self.head_dim = base_attention.head_dim
         self.window_size = window_size
+        self.gating_values = []
+        self.sparsity = 0
+        self.last_gate_mean = 0
+        self.last_gate_std = 0
 
         # Ensure num_heads is divisible by reduction_factor
         assert self.num_heads % reduction_factor == 0
@@ -97,6 +105,9 @@ class GatedDuoAttention(nn.Module):
         # Compute gates with gradient clipping
         gate_input = self.gate_norm(hidden_states)
         gates = torch.sigmoid(self.gate_proj(gate_input).clamp(-10, 10))  # Add clipping
+        
+        # Store the gates for later visualization
+        self.gating_values.append(gates.detach().cpu().numpy())  # Store on CPU to avoid GPU memory issues
 
         # Project states
         query_states = self.q_proj(hidden_states)
@@ -133,14 +144,15 @@ class GatedDuoAttention(nn.Module):
             global_attn_probs = F.softmax(global_scores.float(), dim=-1, dtype=torch.float32).to(scores.dtype)
             
             # Interpolate between the two attention distributions
-            attn_probs = (1 - gates) * local_attn_probs + gates * global_attn_probs #flipped
+            attn_probs = gates * local_attn_probs + (1 - gates) * global_attn_probs
             #scores = scores + causal_mask
             #attn_probs = F.softmax(scores.float(), dim=-1, dtype=torch.float32).to(scores.dtype)
         else:
             # Just use causal mask
             scores = scores + causal_mask
             attn_probs = F.softmax(scores.float(), dim=-1, dtype=torch.float32).to(scores.dtype)
-
+        eps = 1e-6  # Define a small tolerance value
+        self.sparsity = (attn_probs.abs() < eps).float().mean().item()
         # Compute attention scores
         
         # Apply attention
@@ -267,9 +279,18 @@ if __name__ == "__main__":
         output_dir = "./trained_model_no_mask_duo_gate_diff"
     print(output_dir)
 
-
+    train_losses = []
+    val_losses = []
+    train_sparsities = []
+    train_gate_means = []
+    train_gate_stds = []
 
     for epoch in range(4):
+        epoch_train_loss = 0 
+        epoch_train_sparsity = 0 
+        epoch_gate_mean = 0
+        epoch_gate_std = 0
+        
         for i, batch in enumerate(train_loader):
             try:
                 inputs = {key: val.to(device) for key, val in batch.items()}
@@ -284,6 +305,9 @@ if __name__ == "__main__":
                         if isinstance(module, GatedDuoAttention):
                             # Get the reg_loss from the last forward pass
                             reg_loss += module.last_reg_loss
+                            epoch_train_sparsity += module.sparsity
+                            epoch_gate_mean += module.last_gate_mean
+                            epoch_gate_std += module.last_gate_std
                     
                     # Combine losses
                     total_loss = main_loss + reg_loss
@@ -294,6 +318,7 @@ if __name__ == "__main__":
                     optimizer.step()
                     lr_scheduler.step()
                     optimizer.zero_grad()
+                epoch_train_loss += total_loss.item()
 
                 if i % 10 == 0:
                     # Log metrics
@@ -321,8 +346,19 @@ if __name__ == "__main__":
                 else:
                     raise e
 
+        # Store average training loss for the epoch
+        epoch_train_loss /= len(train_loader)
+        epoch_train_sparsity /= len(train_loader)
+        train_losses.append(epoch_train_loss)
+        train_sparsities.append(epoch_train_sparsity)
+        train_gate_means.append(epoch_gate_mean / len(train_loader))
+        train_gate_stds.append(epoch_gate_std / len(train_loader))
+
+
+        # Evaluate on validation set and log val loss
         val_loss = evaluate(model, val_loader)
         print(f"Epoch {epoch}, Validation Loss: {val_loss}")
+        val_losses.append(val_loss)
 
 
     # At the end of training:
@@ -354,4 +390,33 @@ if __name__ == "__main__":
     tokenizer.save_pretrained(output_dir)
     print(f"Model, config, and tokenizer saved to {output_dir}")
 
+    # After training, plot the losses
+    plt.figure(figsize=(10, 5))
+    plt.plot(range(4), train_losses, label="Train Loss", color="blue", marker="o")
+    plt.plot(range(4), val_losses, label="Validation Loss", color="red", marker="x")
+    plt.xlabel("Epoch")
+    plt.ylabel("Loss")
+    plt.title("Training and Validation Loss")
+    plt.legend()
+    plt.savefig(f"trainval_{mask}.png")
 
+
+    sparsity_file = os.path.join(output_dir, "train_sparsities.csv")
+    gate_stats_file = os.path.join(output_dir, "train_gate_stats.csv")
+
+    # Write sparsity values to CSV
+    with open(sparsity_file, mode='w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(["Epoch", "Sparsity"])  # Write header row
+        for epoch, sparsity in enumerate(train_sparsities):
+            writer.writerow([epoch, sparsity])  # Write epoch and sparsity
+
+    print(f"Sparsity values saved to {sparsity_file}")
+
+    # Save gate stats (mean and std)
+    with open(gate_stats_file, mode='w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(["Epoch", "Gate Mean", "Gate Std"])
+        for epoch, (gate_mean, gate_std) in enumerate(zip(train_gate_means, train_gate_stds)):
+            writer.writerow([epoch, gate_mean, gate_std])
+    print(f"Gate stats saved to {gate_stats_file}")

@@ -14,10 +14,15 @@ from train_duo_gate_diff import (
     create_local_window_mask,
     replace_attention_with_masking
 )
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
+from torch.utils.data import DataLoader
+from datasets import Dataset
 
 # Paths to fine-tuned model and baseline
-fine_tuned_model_path = "./trained_model_duo_gate_diff_1204"  # Path to your fine-tuned model
-baseline_model_path = "./trained_model_no_mask_duo_gate_diff"  # Baseline model path
+baseline_model_path = "./trained_model_duo_gate_diff"  # Path to your fine-tuned model
+fine_tuned_model_path = "./trained_model_no_mask_duo_gate_diff"  # Baseline model path
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -25,7 +30,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 with open(os.path.join(fine_tuned_model_path, "config.json"), "r") as f:
     config = json.load(f)
 # Load base model and tokenizer
-tokenizer = AutoTokenizer.from_pretrained(config['base_model_name'])
+tokenizer = AutoTokenizer.from_pretrained(config['base_model_name'], padding_side='left')
 tokenizer.pad_token = tokenizer.eos_token  # Set padding token to be the EOS token
 tokenizer.padding_side='left'
 fine_tuned_model = AutoModelForCausalLM.from_pretrained(config['base_model_name'])
@@ -64,13 +69,10 @@ state_dict1 = torch.load(
 baseline_model.load_state_dict(state_dict1)
 baseline_model = baseline_model.to(device)
 
-# Set device
-
 # Load validation dataset
 dataset = load_dataset("wikitext", "wikitext-103-raw-v1")
 val_data = dataset["validation"].select(range(100))  # Use 100 samples for evaluation
 prompts = [prompt for prompt in val_data["text"] if prompt.strip()]  # Filter out empty strings
-max_length = 512
 
 def generate_responses(prompts, model, tokenizer, max_length=512, batch_size=8):
     model.eval()
@@ -127,51 +129,86 @@ def calculate_perplexity(model, tokenizer, texts, batch_size=8, max_length=512):
     perplexity = math.exp(total_loss / total_tokens)
     return perplexity
 
+def evaluate(model, dataset, tokenizer, batch_size=8, max_length=512):
+    model.eval()
+    total_loss = 0
+    gate_means = []
+    gate_stds = []
+    sparsities = []
 
-# Generate responses from both models
-fine_tuned_responses, fine_tuned_time = generate_responses(prompts, fine_tuned_model, tokenizer, batch_size=8)
-baseline_responses, baseline_time = generate_responses(prompts, baseline_model, tokenizer, batch_size=8)
+    # Split the dataset into batches
+    num_batches = (len(dataset) + batch_size - 1) // batch_size  # Calculate number of batches
 
-# Save responses for analysis
-with open("evaluation_results.txt", "w") as f:
-    for i, prompt in enumerate(prompts):
-        f.write(f"Prompt: {prompt}\n")
-        f.write(f"Fine-Tuned Response: {fine_tuned_responses[i]}\n")
-        f.write(f"Baseline Response: {baseline_responses[i]}\n")
-        f.write("-" * 80 + "\n")
+    with torch.no_grad():
+        for i in range(num_batches):
+            # Extract the batch of texts from the dataset
+            batch_data = dataset[i * batch_size: (i + 1) * batch_size]
+            batch_texts = batch_data["text"]  # Extract the "text" field for the batch
 
-# Calculate perplexity for both models
-fine_tuned_perplexity = calculate_perplexity(fine_tuned_model, tokenizer, prompts)
-baseline_perplexity = calculate_perplexity(baseline_model, tokenizer, prompts)
+            # Tokenize the batch
+            inputs = tokenizer(
+                batch_texts, 
+                return_tensors="pt", 
+                padding=True, 
+                truncation=True, 
+                max_length=max_length
+            ).to(device)
 
-# BLEU Score Calculation
-def calculate_bleu(references, candidates):
-    scores = [sentence_bleu([ref.split()], cand.split()) for ref, cand in zip(references, candidates)]
-    return sum(scores) / len(scores)
+            # Forward pass
+            outputs = model(**inputs, labels=inputs["input_ids"])
+            loss = outputs.loss.item()
+            total_loss += loss
 
-# ROUGE Score Calculation
-def calculate_rouge(references, candidates):
-    scorer = rouge_scorer.RougeScorer(["rouge1", "rouge2", "rougeL"], use_stemmer=True)
-    scores = [scorer.score(ref, cand) for ref, cand in zip(references, candidates)]
-    avg_scores = {
-        "rouge1": sum(score["rouge1"].fmeasure for score in scores) / len(scores),
-        "rouge2": sum(score["rouge2"].fmeasure for score in scores) / len(scores),
-        "rougeL": sum(score["rougeL"].fmeasure for score in scores) / len(scores),
-    }
-    return avg_scores
+            # Collect the gate statistics and sparsity
+            for name, module in model.named_modules():
+                if isinstance(module, GatedDuoAttention):
+                    gate_means.append(module.last_gate_mean)
+                    gate_stds.append(module.last_gate_std)
+                    sparsities.append(module.sparsity)
 
-# Calculate BLEU and ROUGE
-fine_tuned_bleu = calculate_bleu(prompts, fine_tuned_responses)
-baseline_bleu = calculate_bleu(prompts, baseline_responses)
-fine_tuned_rouge = calculate_rouge(prompts, fine_tuned_responses)
-baseline_rouge = calculate_rouge(prompts, baseline_responses)
+    avg_loss = total_loss / num_batches
+    avg_gate_mean = np.mean(gate_means) if gate_means else 0
+    avg_gate_std = np.mean(gate_stds) if gate_stds else 0
+    avg_sparsity = np.mean(sparsities) if sparsities else 0
 
-# Print Results
-print(f"Fine-Tuned Model Perplexity: {fine_tuned_perplexity}")
-print(f"Baseline Model Perplexity: {baseline_perplexity}")
-print(f"Fine-Tuned Model BLEU: {fine_tuned_bleu}")
-print(f"Baseline Model BLEU: {baseline_bleu}")
-print(f"Fine-Tuned Model ROUGE: {fine_tuned_rouge}")
-print(f"Baseline Model ROUGE: {baseline_rouge}")
-print(f"Fine-Tuned Avg Inference Time: {fine_tuned_time:.4f} seconds per response")
-print(f"Baseline Avg Inference Time: {baseline_time:.4f} seconds per response")
+    # Plot the means, stds, and sparsities
+    plt.figure(figsize=(10, 6))
+    
+    # Plot gate means
+    plt.subplot(3, 1, 1)
+    plt.plot(gate_means, label='Gate Means')
+    plt.xlabel('Batch')
+    plt.ylabel('Mean Gate Value')
+    plt.title('Gate Means Across Batches')
+    plt.legend()
+    
+    # Plot gate standard deviations
+    plt.subplot(3, 1, 2)
+    plt.plot(gate_stds, label='Gate Standard Deviations', color='orange')
+    plt.xlabel('Batch')
+    plt.ylabel('Gate Std Value')
+    plt.title('Gate Standard Deviations Across Batches')
+    plt.legend()
+
+    # Plot sparsity
+    plt.subplot(3, 1, 3)
+    plt.plot(sparsities, label='Sparsity', color='green')
+    plt.xlabel('Batch')
+    plt.ylabel('Sparsity Value')
+    plt.title('Sparsity Across Batches')
+    plt.legend()
+
+    plt.tight_layout()
+    plt.show()
+
+    return avg_loss, avg_gate_mean, avg_gate_std, avg_sparsity
+
+
+# Now, you can run the evaluation and plot the results
+avg_loss, avg_gate_mean, avg_gate_std, avg_sparsity = evaluate(fine_tuned_model, val_data, tokenizer)
+
+# Optionally, print out the average values
+print(f"Average Loss: {avg_loss}")
+print(f"Average Gate Mean: {avg_gate_mean}")
+print(f"Average Gate Std: {avg_gate_std}")
+print(f"Average Sparsity: {avg_sparsity}")

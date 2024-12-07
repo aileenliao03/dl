@@ -2,9 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
 
 class AttentionForgetMask(nn.Module):
     def __init__(self, base_llm_model, threshold=0.5, retain_percentage=0.9):

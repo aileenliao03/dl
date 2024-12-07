@@ -24,3 +24,10 @@ config: {'epochs': 5, 'batch_size': 64, 'learning_rate': 5e-05, 'model_name': 'F
 2024-11-29 12:52:42,740 INFO    MainThread:1045566 [wandb_run.py:_redirect():2370] Wrapping output streams.
 2024-11-29 12:52:42,740 INFO    MainThread:1045566 [wandb_run.py:_redirect():2395] Redirects installed.
 2024-11-29 12:52:42,741 INFO    MainThread:1045566 [wandb_init.py:init():911] run started, returning control to user process
+2024-11-29 13:53:19,538 INFO    MainThread:1045566 [wandb_run.py:_finish():2155] finishing run ai0liao/deeplearning/uimkpob3
+2024-11-29 13:53:19,538 INFO    MainThread:1045566 [wandb_run.py:_atexit_cleanup():2420] got exitcode: 0
+2024-11-29 13:53:19,538 INFO    MainThread:1045566 [wandb_run.py:_restore():2402] restore
+2024-11-29 13:53:19,538 INFO    MainThread:1045566 [wandb_run.py:_restore():2408] restore done
+2024-11-29 13:53:22,118 INFO    MainThread:1045566 [wandb_run.py:_footer_history_summary_info():3960] rendering history
+2024-11-29 13:53:22,119 INFO    MainThread:1045566 [wandb_run.py:_footer_history_summary_info():3992] rendering summary
+2024-11-29 13:53:22,124 INFO    MainThread:1045566 [wandb_run.py:_footer_sync_info():3921] logging synced files

@@ -2,4 +2,5 @@ Training:   0%|                                                              | 0
   scaler = GradScaler()
 /home/aileen/dl/new/train_model.py:79: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
   with autocast():
-Training:  30%|███████████████▍                                    | 232/781 [17:57<40:56,  4.48s/it]
+Training: 785it [1:00:31,  3.63s/it]                                                                 
+Model saved
