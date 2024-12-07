@@ -8,7 +8,7 @@ import time
 import os
 import dill
 import json
-from train_duo_gate_accel import (
+from train_duo_gate_diff import (
     GatedDuoAttention,
     create_causal_mask,
     create_local_window_mask,

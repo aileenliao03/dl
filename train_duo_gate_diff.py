@@ -144,7 +144,7 @@ class GatedDuoAttention(nn.Module):
             global_attn_probs = F.softmax(global_scores.float(), dim=-1, dtype=torch.float32).to(scores.dtype)
             
             # Interpolate between the two attention distributions
-            attn_probs = (1 - gates) * local_attn_probs + gates * global_attn_probs
+            attn_probs = gates * local_attn_probs + (1 - gates) * global_attn_probs
             #scores = scores + causal_mask
             #attn_probs = F.softmax(scores.float(), dim=-1, dtype=torch.float32).to(scores.dtype)
         else:
@@ -274,7 +274,7 @@ if __name__ == "__main__":
     #wandb.init(project="llama-gated-attention")
 
     if mask:
-        output_dir = "./trained_model_duo_gate_diff"
+        output_dir = "./trained_model_duo_gate_diff_1205"
     else:
         output_dir = "./trained_model_no_mask_duo_gate_diff"
     print(output_dir)

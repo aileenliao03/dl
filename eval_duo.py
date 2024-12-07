@@ -24,8 +24,8 @@ from torch.utils.data import DataLoader
 from datasets import Dataset
 
 # Paths to fine-tuned model and baseline
-baseline_model_path = "./trained_model_no_mask_duo_gate_diff"  # Path to your fine-tuned model
-fine_tuned_model_path = "./trained_model_duo_gate_diff"  # Baseline model path
+baseline_model_path = "./trained_model_duo_gate_diff"  # Path to your fine-tuned model
+fine_tuned_model_path = "./trained_model_no_mask_duo_gate_diff"  # Baseline model path
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -35,6 +35,7 @@ with open(os.path.join(fine_tuned_model_path, "config.json"), "r") as f:
 # Load base model and tokenizer
 tokenizer = AutoTokenizer.from_pretrained(config['base_model_name'])
 tokenizer.pad_token = tokenizer.eos_token  # Set padding token to be the EOS token
+tokenizer.padding_side='left'
 fine_tuned_model = AutoModelForCausalLM.from_pretrained(config['base_model_name'])
 # Apply custom attention if this was a masked model
 fine_tuned_model = replace_attention_with_masking(fine_tuned_model, config['use_local_mask'])
