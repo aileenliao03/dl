@@ -43,7 +43,7 @@ class GatedDuoAttention(nn.Module):
         self.gate_norm = nn.LayerNorm(self.hidden_size)
         
         self.gate_reg_strength = 0.1
-        self.gate_threshold = 0.4
+        self.gate_threshold = 0.5
 
         # Copy weights from base attention
         self.q_proj.weight.data.copy_(base_attention.q_proj.weight.data)
@@ -133,7 +133,7 @@ class GatedDuoAttention(nn.Module):
             global_attn_probs = F.softmax(global_scores.float(), dim=-1, dtype=torch.float32).to(scores.dtype)
             
             # Interpolate between the two attention distributions
-            attn_probs = gates * local_attn_probs + (1 - gates) * global_attn_probs
+            attn_probs = (1 - gates) * local_attn_probs + gates * global_attn_probs #flipped
             #scores = scores + causal_mask
             #attn_probs = F.softmax(scores.float(), dim=-1, dtype=torch.float32).to(scores.dtype)
         else:
@@ -165,7 +165,7 @@ class GatedDuoAttention(nn.Module):
         )
         
         # L1 regularization to encourage sparsity (stronger weight)
-        sparsity_reg = 0.4 * torch.mean(gates)  # Push gates toward 0
+        sparsity_reg = 0.1 * torch.mean(gates)  # Push gates toward 0
         
         # Combined loss that prefers binary gates
         reg_loss = binary_reg + entropy_reg + sparsity_reg
@@ -228,7 +228,7 @@ def evaluate(model, dataloader):
     return total_loss / len(dataloader)
 
 if __name__ == "__main__":
-    mask = False
+    mask = True
     tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-1B")
     tokenizer.pad_token = tokenizer.eos_token
     model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-3.2-1B")
@@ -262,7 +262,7 @@ if __name__ == "__main__":
     #wandb.init(project="llama-gated-attention")
 
     if mask:
-        output_dir = "./trained_model_duo_gate_diff"
+        output_dir = "./trained_model_duo_gate_diff_1205"
     else:
         output_dir = "./trained_model_no_mask_duo_gate_diff"
     print(output_dir)

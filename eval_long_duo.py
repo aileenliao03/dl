@@ -8,7 +8,7 @@ import time
 import os
 import dill
 import json
-from train_duo_gate_accel import (
+from train_duo_gate_diff import (
     GatedDuoAttention,
     create_causal_mask,
     create_local_window_mask,
@@ -16,8 +16,8 @@ from train_duo_gate_accel import (
 )
 
 # Paths to fine-tuned model and baseline
-fine_tuned_model_path = "./trained_model_duo_gate_new"  # Path to your fine-tuned model
-baseline_model_path = "./trained_model_no_mask_duo_gate_new"  # Baseline model path
+fine_tuned_model_path = "./trained_model_duo_gate_diff"  # Path to your fine-tuned model
+baseline_model_path = "./trained_model_no_mask_duo_gate_diff"  # Baseline model path
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 

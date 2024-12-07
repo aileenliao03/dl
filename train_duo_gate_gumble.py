@@ -42,7 +42,7 @@ class GatedDuoAttention(nn.Module):
         self.gate_norm = nn.LayerNorm(self.hidden_size)
         
         self.gate_reg_strength = 0.1
-        self.gate_threshold = 0.4
+        self.gate_threshold = 0.5
 
         # Copy weights from base attention
         self.q_proj.weight.data.copy_(base_attention.q_proj.weight.data)
@@ -127,10 +127,10 @@ class GatedDuoAttention(nn.Module):
             global_scores = scores + causal_mask
 
             # Stack gates for Gumbel-Softmax as logits
-            logits = torch.cat([gates, 1 - gates], dim=-1)  # Shape: [bsz, q_len* 2]
+            logits = torch.cat([1-gates, gates], dim=-1)  # Shape: [bsz, q_len* 2]
 
             # Sample Gumbel weights using gates as logits
-            gumbel_weights = gumbel_softmax(logits, tau=0.1, hard=False)  # Shape: [bsz, q_len* 2]
+            gumbel_weights = gumbel_softmax(logits, tau=0.5, hard=False)  # Shape: [bsz, q_len* 2]
 
             # Expand weights to match attention dimensions
             gumbel_weights = gumbel_weights.unsqueeze(1).unsqueeze(3)  # [bsz, 1, q_len*2, 1 ]
@@ -177,7 +177,7 @@ class GatedDuoAttention(nn.Module):
         )
         
         # L1 regularization to encourage sparsity (stronger weight)
-        sparsity_reg = 0.4 * torch.mean(gates)  # Push gates toward 0
+        sparsity_reg = 0.1 * torch.mean(gates)  # Push gates toward 0
         
         # Combined loss that prefers binary gates
         reg_loss = binary_reg + entropy_reg + sparsity_reg
@@ -294,7 +294,7 @@ if __name__ == "__main__":
     #wandb.init(project="llama-gated-attention")
 
     if mask:
-        output_dir = "./trained_model_duo_gate_gumble"
+        output_dir = "./trained_model_duo_gate_gumble_1205"
     else:
         output_dir = "./trained_model_no_mask_duo_gate_gumble"
     print(output_dir)
