@@ -16,10 +16,11 @@ from train_duo_gate_diff import (
 )
 import torch
 import torch.profiler
+from torch.profiler import profile, record_function, ProfilerActivity
 
 # Paths to fine-tuned model and baseline
 fine_tuned_model_path = "./trained_model_duo_gate_diff"  # Path to your fine-tuned model
-baseline_model_path = "./trained_model_no_mask_duo_gate_new"  # Baseline model path
+baseline_model_path = "./trained_model_no_mask_duo_gate_diff"  # Baseline model path
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -105,27 +106,22 @@ with torch.profiler.profile(
     profile_memory=True,
     with_stack=True
 ) as prof:
-    for _ in range(10):  # Example workload
-        y = x @ x
     fine_tuned_model.eval()
     baseline_model.eval()
-    prompt=prompts[1]
+
+    prompt = prompts[1]  # Use the second prompt as an example
+
+    # Fine-tuned model inference
     inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=max_length).to(device)
-    outputs = fine_tuned_model.generate(**inputs, max_new_tokens=max_length)
-    #response = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    #print(response)
-    #inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=max_length).to(device)
-    #outputs = baseline_model.generate(**inputs, max_new_tokens=max_length)
-    #response = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    #print(response)
+    with record_function("Fine-Tuned Model Inference"):
+        outputs_fine_tuned = fine_tuned_model.generate(**inputs, max_new_tokens=max_length)
 
+    # Baseline model inference
+    with record_function("Baseline Model Inference"):
+        outputs_baseline = baseline_model.generate(**inputs, max_new_tokens=max_length)
 
-
-
+# Export profiler data to a file
 prof.export_chrome_trace("./trace.json")
 
-# to view the trace
-# pip install vizviewer? see how to install vizviewer
-# then run 
-# vizviewer trace.json --port 3001
-# then open [ip]:3001 in browser
+print("Profiler trace exported to './trace.json'")
+

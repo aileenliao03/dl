@@ -127,7 +127,7 @@ class GatedDuoAttention(nn.Module):
             global_scores = scores + causal_mask
 
             # Stack gates for Gumbel-Softmax as logits
-            logits = torch.cat([gates, 1 - gates], dim=-1)  # Shape: [bsz, q_len* 2]
+            logits = torch.cat([1 - gates, gates], dim=-1)  # Shape: [bsz, q_len* 2]
 
             # Sample Gumbel weights using gates as logits
             gumbel_weights = gumbel_softmax(logits, tau=0.1, hard=False)  # Shape: [bsz, q_len* 2]
@@ -260,7 +260,7 @@ def evaluate(model, dataloader):
     return total_loss / len(dataloader)
 
 if __name__ == "__main__":
-    mask = True
+    mask = False
     tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-1B")
     tokenizer.pad_token = tokenizer.eos_token
     model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-3.2-1B")
