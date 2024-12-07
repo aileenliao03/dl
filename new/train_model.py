@@ -28,6 +28,7 @@ from IdentityMask import IdentityMask
 from MLPForgetMask import MLPForgetMask
 from CNNMask import CNNMLPForgetMask
 from helper import apply_mask, memory_check_and_empty
+from TopKMask import TopKForgetMask
 
 def train_model(base_model, forget_layer,soft, train_dataloader, optimizer, scheduler, num_epochs, device, model_name, save_dir, batch_size=64):
 
@@ -150,11 +151,12 @@ base_llm_model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-3.2-1B")
 #mask = RandomForgetMask(forget_prob=.1).to(device)
 #mask = MLPForgetMask(base_llm_model).to(device)
 # mask = RNNForgetMask(base_llm_model, bidirectional=False).to(device)
-mask = AttentionForgetMask(base_llm_model).to(device)
+# mask = AttentionForgetMask(base_llm_model).to(device)
+mask = TopKForgetMask(base_llm_model, k=5).to(device)  # k is the number of tokens to forget
 
 soft = False
 parameters = list(base_llm_model.parameters()) + list(mask.parameters())
-name = "F_GRU_TFTFF2step_10000_Schedule_Reinforce_Step_MLPForget_Full_Fintune"
+name = "TopKMask_90"
 num_epochs = 5
 
 # Optimizer and Scheduler

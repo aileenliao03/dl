@@ -90,11 +90,7 @@ optimizer = AdamW(model.parameters(), lr=3e-5)
 num_training_steps = len(train_loader) * 4
 lr_scheduler = get_scheduler("linear", optimizer=optimizer, num_warmup_steps=500, num_training_steps=num_training_steps)
 
-<<<<<<< HEAD
-# scaler = GradScaler()
-=======
 #scaler = GradScaler()
->>>>>>> e8958b52d5ed357f90bb8a3f80c142ec1fb20b84
 accumulation_steps = 4
 model.train()
 
@@ -108,17 +104,6 @@ for epoch in range(4):
                 outputs = model(**inputs, labels=inputs["input_ids"])
                 loss = outputs.loss / accumulation_steps
 
-<<<<<<< HEAD
-  #          scaler.scale(loss).backward()
-            loss.backward()
-
-            if (i + 1) % accumulation_steps == 0:
-   #             scaler.unscale_(optimizer)
-                #torch.nn.utils.clip_grad_norm_(model.parameters(), max_grad_norm)
-                optimizer.step()  # Move optimizer step before scheduler step
-                lr_scheduler.step()
-    #            scaler.update()
-=======
             
             #scaler.scale(loss).backward()
             loss.backward()
@@ -129,7 +114,6 @@ for epoch in range(4):
                 optimizer.step()  # Move optimizer step before scheduler step
                 lr_scheduler.step()
                 #scaler.update()
->>>>>>> e8958b52d5ed357f90bb8a3f80c142ec1fb20b84
                 optimizer.zero_grad()
 
             if i % 1 == 0:

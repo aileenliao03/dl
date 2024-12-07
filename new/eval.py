@@ -19,6 +19,14 @@ import time
 login(token="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")
 wandb.login(key="a1df0c88c10ee7966670142e4afd5a895138c7cf")
 device =  ('cuda' if torch.cuda.is_available() else 'cpu')
+from Adaptive import AttentionForgetMask
+from RNNMask import RNNForgetMask
+from RandomForgetMask import RandomForgetMask
+from IdentityMask import IdentityMask
+from MLPForgetMask import MLPForgetMask
+from CNNMask import CNNMLPForgetMask
+from helper import apply_mask, memory_check_and_empty
+from LangMod import Language_Model
 
 EXAMPLES = 100
 dataset = load_dataset("wikitext", "wikitext-103-raw-v1")
@@ -29,7 +37,7 @@ tokenizer.pad_token = tokenizer.eos_token
 #baseline_model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-3.2-1B").to(device)
 # Generate responses
 def load_model(name,device ):
-  path = "/content/drive/My Drive/llama/models/" + name+"/"
+  path = "/home/aileen/dl/new/models/" + name+"/"
   forget_layer = torch.load(path + "forget.pt")
   base_llm_model = AutoModelForCausalLM.from_pretrained(path).to(device)
   return base_llm_model, forget_layer
@@ -73,7 +81,7 @@ def calculate_perplexity(model, tokenizer, texts, batch_size=8, max_length=512, 
     ratio = (total_tokens -notactive_tokens)/total_tokens
     perplexity = math.exp(total_loss / total_tokens)
     return perplexity, ratio
-name = "F_GRU_TFTFF2step_10000_Schedule_Reinforce_Step_MLPForget_Full_Fintune"
+name = "TopKMask_90"
 base_llm_model, forget_layer = load_model(name, device)
 #choice_config = None
 choice_config= {"percent":.90}
@@ -165,4 +173,4 @@ logs = {
 }
 if choice_config != None:
   logs.update(choice_config)
-#wandb.log(logs)
+wandb.log(logs)

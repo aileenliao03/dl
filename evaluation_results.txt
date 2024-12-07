@@ -15,7 +15,79 @@ Baseline Response:  Homarus gammarus, known as the European lobster or common lo
 Prompt:  = = Description = = 
 
 Fine-Tuned Response:  = = Description = = 
-
+This is a simple tool to help the user to find out the number of the lines in a text file. 
+The tool is a command line tool and it is not intended to be used in a script. 
+The tool was created to help the user to quickly find out the number of lines in a text file. 
+The tool is very simple and it is very fast. 
+The tool works by reading the lines of the text file and counting the number of lines in the text file. 
+The tool also displays the number of lines in the text file. 
+ = = Usage = = 
+ = = Examples = = 
+ = = References = = 
+ = = License = = 
+ = = Copyright = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = = Authors = = 
+ = =
 Baseline Response:  = = Description = = 
 
 --------------------------------------------------------------------------------
@@ -39,6 +111,10 @@ Fine-Tuned Response:  The exoskeleton is generally blue above, with spots that c
 
 Baseline Response:  The exoskeleton is generally blue above, with spots that coalesce, and yellow below. The red colour associated with lobsters only appears after cooking. This occurs because, in life, the red pigment astaxanthin is bound to a protein complex, but the complex is broken up by the heat of cooking, releasing the red pigment. 
 
+Fine-Tuned Response:  The exoskeleton is generally blue above, with spots that coalesce, and yellow below. The red colour associated with lobsters only appears after cooking. This occurs because, in life, the red pigment astaxanthin is bound to a protein complex, but the complex is broken up by the heat of cooking, releasing the red pigment. 
+
+Baseline Response:  The exoskeleton is generally blue above, with spots that coalesce, and yellow below. The red colour associated with lobsters only appears after cooking. This occurs because, in life, the red pigment astaxanthin is bound to a protein complex, but the complex is broken up by the heat of cooking, releasing the red pigment. 
+
 --------------------------------------------------------------------------------
 Prompt:  The closest relative of H. gammarus is the American lobster , Homarus americanus . The two species are very similar , and can be crossed artificially , although hybrids are unlikely to occur in the wild since their ranges do not overlap . The two species can be distinguished by a number of characteristics : 
 
@@ -57,13 +133,42 @@ Baseline Response:  The rostrum of H. americanus bears one or more spines on the
 Prompt:  The spines on the claws of H. americanus are red or red @-@ tipped , while those of H. gammarus are white or white @-@ tipped . 
 
 Fine-Tuned Response:  The spines on the claws of H. americanus are red or red @-@ tipped, while those of H. gammarus are white or white @-@ tipped. 
-
+ The spines on the claws of H. americanus are red or red @-@ tipped, while those of H. gammarus are white or white @-@ tipped. 
+ The spines on the claws of H. americanus are red or red @-@ tipped, while those of H. gammarus are white or white @-@ tipped. 
+ The spines on the claws of H. americanus are red or red @-@ tipped, while those of H. gammarus are white or white @-@ tipped. 
+ The spines on the claws of H. americanus are red or red @-@ tipped, while those of H. gammarus are white or white @-@ tipped. 
+ The spines on the claws of H. americanus are red or red @-@ tipped, while those of H. gammarus are white or white @-@ tipped. 
+ The spines on the claws of H. americanus are red or red @-@ tipped, while those of H. gammarus are white or white @-@ tipped. 
+ The spines on the claws of H. americanus are red or red @-@ tipped, while those of H. gammarus are white or white @-@ tipped. 
+ The spines on the claws of H. americanus are red or red @-@ tipped, while those of H. gammarus are white or white @-@ tipped. 
+ The spines on the claws of H. americanus are red or red @-@ tipped, while those of H. gammarus are white or white @-@ tipped. 
+ The spines on the claws of H. americanus are red or red @-@ tipped, while those of H. gammarus are white or white @-@ tipped. 
+ The spines on the claws of H. americanus are red or red @-@ tipped, while those of H. gammarus are white or white @-@ tipped. 
+ The spines on the claws of H. americanus are red or red @-@ tipped, while those of H. gammarus are white or white @-@ tipped. 
+ The spines on the claws of H. americanus are red or red @-@ tipped, while those of H. gammarus are white or white @-@ tipped. 
+ The spines on the claws of H. americanus are red or red @-@
 Baseline Response:  The spines on the claws of H. americanus are red or red @-@ tipped, while those of H. gammarus are white or white @-@ tipped. 
 
 --------------------------------------------------------------------------------
 Prompt:  The underside of the claw of H. americanus is orange or red , while that of H. gammarus is creamy white or very pale red . 
 
 Fine-Tuned Response:  The underside of the claw of H. americanus is orange or red, while that of H. gammarus is creamy white or very pale red. 
+ The underside of the claw of H. americanus is orange or red, while that of H. gammarus is creamy white or very pale red. 
+ The underside of the claw of H. americanus is orange or red, while that of H. gammarus is creamy white or very pale red. 
+ The underside of the claw of H. americanus is orange or red, while that of H. gammarus is creamy white or very pale red. 
+ The underside of the claw of H. americanus is orange or red, while that of H. gammarus is creamy white or very pale red. 
+ The underside of the claw of H. americanus is orange or red, while that of H. gammarus is creamy white or very pale red. 
+ The underside of the claw of H. americanus is orange or red, while that of H. gammarus is creamy white or very pale red. 
+ The underside of the claw of H. americanus is orange or red, while that of H. gammarus is creamy white or very pale red. 
+ The underside of the claw of H. americanus is orange or red, while that of H. gammarus is creamy white or very pale red. 
+ The underside of the claw of H. americanus is orange or red, while that of H. gammarus is creamy white or very pale red. 
+ The underside of the claw of H. americanus is orange or red, while that of H. gammarus is creamy white or very pale red. 
+ The underside of the claw of H. americanus is orange or red, while that of H. gammarus is creamy white or very pale red. 
+ The underside of the claw of H. americanus is orange or red, while that of H. gammarus is creamy white or very pale red. 
+ The underside of the claw of H. americanus is orange or red, while that of H. gammarus is creamy white or very pale red. 
+ The underside of the claw of H. americanus is orange or red, while that of H. gammarus is creamy white or very pale red. 
+ The underside of the claw of H. americanus is orange or red, while that of H. gammarus is creamy white or very pale red. 
+ The underside of the claw of H. americanus is orange or red, while that of H. gammarus is creamy white or very pale red. 
 
 Baseline Response:  The underside of the claw of H. americanus is orange or red, while that of H. gammarus is creamy white or very pale red. 
 
@@ -71,6 +176,55 @@ Baseline Response:  The underside of the claw of H. americanus is orange or red,
 Prompt:  = = Life cycle = = 
 
 Fine-Tuned Response:  = = Life cycle = = 
+The life cycle of a species is determined by its environment and its genetic make up. 
+The life cycle of a species is determined by its environment and its genetic make up. 
+- The species is born, grows and matures and dies. 
+- The species is born, grows and matures and dies. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
+- The species reproduces by producing offspring. 
 
 Baseline Response:  = = Life cycle = = 
 
@@ -92,7 +246,7 @@ Baseline Response:  The eggs hatch at night, and the larvae swim to the water su
 Prompt:  = = Distribution = = 
 
 Fine-Tuned Response:  = = Distribution = = 
-
+ = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 Baseline Response:  = = Distribution = = 
 
 --------------------------------------------------------------------------------
@@ -109,6 +263,10 @@ Fine-Tuned Response:  The species can be divided into four genetically distinct 
 
 Baseline Response:  The species can be divided into four genetically distinct populations, one widespread population, and three which have diverged due to small effective population sizes, possibly due to adaptation to the local environment. The first of these is the population of lobsters from northern Norway, which have been referred to as the " midnight @-@ sun lobster ". The populations in the Mediterranean Sea are distinct from those in the Atlantic Ocean. The last distinct population is found in the Netherlands : samples from the Oosterschelde were distinct from those collected in the North Sea or English Channel. 
 
+Fine-Tuned Response:  The species can be divided into four genetically distinct populations, one widespread population, and three which have diverged due to small effective population sizes, possibly due to adaptation to the local environment. The first of these is the population of lobsters from northern Norway, which have been referred to as the " midnight @-@ sun lobster ". The populations in the Mediterranean Sea are distinct from those in the Atlantic Ocean. The last distinct population is found in the Netherlands : samples from the Oosterschelde were distinct from those collected in the North Sea or English Channel. 
+
+Baseline Response:  The species can be divided into four genetically distinct populations, one widespread population, and three which have diverged due to small effective population sizes, possibly due to adaptation to the local environment. The first of these is the population of lobsters from northern Norway, which have been referred to as the " midnight @-@ sun lobster ". The populations in the Mediterranean Sea are distinct from those in the Atlantic Ocean. The last distinct population is found in the Netherlands : samples from the Oosterschelde were distinct from those collected in the North Sea or English Channel. 
+
 --------------------------------------------------------------------------------
 Prompt:  Attempts have been made to introduce H. gammarus to New Zealand , alongside other European species such as the edible crab , Cancer pagurus . Between 1904 and 1914 , one million lobster larvae were released from hatcheries in Dunedin , but the species did not become established there . 
 
@@ -120,7 +278,7 @@ Baseline Response:  Attempts have been made to introduce H. gammarus to New Zeal
 Prompt:  = = Ecology = = 
 
 Fine-Tuned Response:  = = Ecology = = 
-
+ = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 Baseline Response:  = = Ecology = = 
 
 --------------------------------------------------------------------------------
@@ -134,7 +292,18 @@ Baseline Response:  Adult H. gammarus live on the continental shelf at depths of
 Prompt:  The diet of H. gammarus mostly consists of other benthic invertebrates . These include crabs , molluscs , sea urchins , starfish and polychaete worms . 
 
 Fine-Tuned Response:  The diet of H. gammarus mostly consists of other benthic invertebrates. These include crabs, molluscs, sea urchins, starfish and polychaete worms. 
-
+ The diet of H. gammarus mostly consists of other benthic invertebrates. These include crabs, molluscs, sea urchins, starfish and polychaete worms. 
+ The diet of H. gammarus mostly consists of other benthic invertebrates. These include crabs, molluscs, sea urchins, starfish and polychaete worms. 
+ The diet of H. gammarus mostly consists of other benthic invertebrates. These include crabs, molluscs, sea urchins, starfish and polychaete worms. 
+ The diet of H. gammarus mostly consists of other benthic invertebrates. These include crabs, molluscs, sea urchins, starfish and polychaete worms. 
+ The diet of H. gammarus mostly consists of other benthic invertebrates. These include crabs, molluscs, sea urchins, starfish and polychaete worms. 
+ The diet of H. gammarus mostly consists of other benthic invertebrates. These include crabs, molluscs, sea urchins, starfish and polychaete worms. 
+ The diet of H. gammarus mostly consists of other benthic invertebrates. These include crabs, molluscs, sea urchins, starfish and polychaete worms. 
+ The diet of H. gammarus mostly consists of other benthic invertebrates. These include crabs, molluscs, sea urchins, starfish and polychaete worms. 
+ The diet of H. gammarus mostly consists of other benthic invertebrates. These include crabs, molluscs, sea urchins, starfish and polychaete worms. 
+ The diet of H. gammarus mostly consists of other benthic invertebrates. These include crabs, molluscs, sea urchins, starfish and polychaete worms. 
+ The diet of H. gammarus mostly consists of other benthic invertebrates. These include crabs, molluscs, sea urchins, starfish and polychaete worms. 
+ The diet of H. gammarus mostly consists of other benthic invertebrates. These include crabs, molluscs, sea urchins, starfish and polycha
 Baseline Response:  The diet of H. gammarus mostly consists of other benthic invertebrates. These include crabs, molluscs, sea urchins, starfish and polychaete worms. 
 
 --------------------------------------------------------------------------------
@@ -155,7 +324,7 @@ Baseline Response:  Homarus gammarus is susceptible to the disease gaffkaemia, c
 Prompt:  = = Human consumption = = 
 
 Fine-Tuned Response:  = = Human consumption = = 
-
+ = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 Baseline Response:  = = Human consumption = = 
 
 --------------------------------------------------------------------------------
@@ -176,14 +345,39 @@ Baseline Response:  Lobsters are mostly fished using lobster pots, although line
 Prompt:  Aquaculture systems for H. gammarus are under development , and production rates are still very low . 
 
 Fine-Tuned Response:  Aquaculture systems for H. gammarus are under development, and production rates are still very low. 
-
+ The first commercial production of H. gammarus was in 1998 in the Netherlands. 
+ The first commercial production of H. gammarus was in 1998 in the Netherlands. 
+ The first commercial production of H. gammarus was in 1998 in the Netherlands. 
+ The first commercial production of H. gammarus was in 1998 in the Netherlands. 
+ The first commercial production of H. gammarus was in 1998 in the Netherlands. 
+ The first commercial production of H. gammarus was in 1998 in the Netherlands. 
+ The first commercial production of H. gammarus was in 1998 in the Netherlands. 
+ The first commercial production of H. gammarus was in 1998 in the Netherlands. 
+ The first commercial production of H. gammarus was in 1998 in the Netherlands. 
+ The first commercial production of H. gammarus was in 1998 in the Netherlands. 
+ The first commercial production of H. gammarus was in 1998 in the Netherlands. 
+ The first commercial production of H. gammarus was in 1998 in the Netherlands. 
+ The first commercial production of H. gammarus was in 1998 in the Netherlands. 
+ The first commercial production of H. gammarus was in 1998 in the Netherlands. 
+ The first commercial production of H. gammarus was in 1998 in the Netherlands. 
+ The first commercial production of H. gammarus was in 1998 in the Netherlands. 
+ The first commercial production of H. gammarus was in 1998 in the Netherlands. 
+ The first commercial production of H. gammarus was in 1998 in the Netherlands. 
+ The first commercial production of H. gammarus was in 1998 in the Netherlands. 
+ The first commercial production of H. gammarus was in 1998 in the Netherlands. 
+ The first commercial production of H. gammarus was in 1998 in the Netherlands. 
+ The first commercial production of H. gammarus was in 1998 in the Netherlands. 
+ The first commercial production of H. gammarus was in 1998 in the Netherlands. 
+ The first commercial production of H. gammarus was in 1998 in the Netherlands. 
+ The first commercial production of H. gammarus was in 1998 in the Netherlands. 
+ The first commercial production of H. gammarus was in
 Baseline Response:  Aquaculture systems for H. gammarus are under development, and production rates are still very low. 
 
 --------------------------------------------------------------------------------
 Prompt:  = = Taxonomic history = = 
 
 Fine-Tuned Response:  = = Taxonomic history = = 
-
+ = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 Baseline Response:  = = Taxonomic history = = 
 
 --------------------------------------------------------------------------------
@@ -211,14 +405,112 @@ Baseline Response:  The type specimen of Homarus gammarus was a lectotype select
 Prompt:  The common name for H. gammarus preferred by the Food and Agriculture Organization is " European lobster " , but the species is also widely known as the " common lobster " . 
 
 Fine-Tuned Response:  The common name for H. gammarus preferred by the Food and Agriculture Organization is " European lobster ", but the species is also widely known as the " common lobster ". 
-
+The common name for H. gammarus preferred by the Food and Agriculture Organization is " European lobster ", but the species is also widely known as the " common lobster ". 
+The common name for H. gammarus preferred by the Food and Agriculture Organization is " European lobster ", but the species is also widely known as the " common lobster ". 
+The common name for H. gammarus preferred by the Food and Agriculture Organization is " European lobster ", but the species is also widely known as the " common lobster ". 
+The common name for H. gammarus preferred by the Food and Agriculture Organization is " European lobster ", but the species is also widely known as the " common lobster ". 
+The common name for H. gammarus preferred by the Food and Agriculture Organization is " European lobster ", but the species is also widely known as the " common lobster ". 
+The common name for H. gammarus preferred by the Food and Agriculture Organization is " European lobster ", but the species is also widely known as the " common lobster ". 
+The common name for H. gammarus preferred by the Food and Agriculture Organization is " European lobster ", but the species is also widely known as the " common lobster ". 
+The common name for H. gammarus preferred by the Food and Agriculture Organization is " European lobster ", but the species is also widely known as the " common lobster ". 
+The common name for H. gammarus preferred by the Food and Agriculture Organization is " European lobster ", but the species is also widely known as the " common lobster ". 
+The common name for H. gammarus preferred by the Food and Agriculture Organization is " European lobster ", but the species is also widely known as the " common lobster ". 
+The common name for H. gammarus preferred by the Food and Agriculture Organization is " European lobster ", but the species is also widely known as the " common lobster ". 
+The common name for H. gammarus preferred by the Food and Agriculture Organization is " European lobster ", but the species is also widely known as the " common lobster ". 
+The common name for H. gammarus preferred by the Food and Agriculture Organization is " European lobster ", but the species is also widely known as the " common lobster ". 
+The common name for H. gammarus preferred by the Food and Agriculture Organization is " European lobster ", but the species is also widely known as the
 Baseline Response:  The common name for H. gammarus preferred by the Food and Agriculture Organization is " European lobster ", but the species is also widely known as the " common lobster ". 
 
 --------------------------------------------------------------------------------
 Prompt:  = Frank Headlam = 
 
 Fine-Tuned Response:  = Frank Headlam = 
-
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank Headlam = 
+ = Frank
 Baseline Response:  = Frank Headlam = 
 
 --------------------------------------------------------------------------------
@@ -239,7 +531,7 @@ Baseline Response:  Headlam served as Officer Commanding North @-@ Western Area 
 Prompt:  = = Early career = = 
 
 Fine-Tuned Response:  = = Early career = = 
-
+ = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 Baseline Response:  = = Early career = = 
 
 --------------------------------------------------------------------------------
@@ -267,7 +559,7 @@ Baseline Response:  Headlam completed a flying instructors course in July 1936 a
 Prompt:  = = World War II = = 
 
 Fine-Tuned Response:  = = World War II = = 
-
+ = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 Baseline Response:  = = World War II = = 
 
 --------------------------------------------------------------------------------
@@ -302,7 +594,8 @@ Baseline Response:  Headlam remained in Darwin as Controller of Operations at He
 Prompt:  = = Post @-@ war career = = 
 
 Fine-Tuned Response:  = = Post @-@ war career = = 
-
+ = = War career = = 
+ = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 Baseline Response:  = = Post @-@ war career = = 
 
 --------------------------------------------------------------------------------
@@ -340,11 +633,15 @@ Fine-Tuned Response:  Returning to Australia, Headlam became Deputy Chief of the
 
 Baseline Response:  Returning to Australia, Headlam became Deputy Chief of the Air Staff ( DCAS ) on 26 January 1965. He was appointed a Companion of the Order of the Bath ( CB ) " in recognition of distinguished service in the Borneo Territories " on 22 June. His tenure as DCAS coincided with the most significant rearmament program the Air Force had undertaken since World War II, and with manpower shortages stemming from this expansion and from Australia's increasing involvement in the security of South East Asia. The first RAAF helicopters were committed to the Vietnam War towards the end of his term, and he travelled to Saigon with the Chief of the General Staff, Lieutenant General Sir John Wilton, in March 1966 to plan the deployment. The year before, Wilton had recommended to Air Marshal Murdoch, the Chief of the Air Staff, that two Iroquois be sent to Vietnam for familiarisation purposes ; Murdoch had rebuffed Wilton, and the RAAF helicopter squadron was considered underprepared for its army co @-@ operation role when it finally did deploy. Headlam succeeded Air Vice Marshal Douglas Candy as AOC Support Command, Melbourne, on 8 August 1966. Support Command had been formed in 1959, by merging the RAAF's former Training and Maintenance Commands. On 1 January 1968, Headlam was posted to London as Head of the Australian Joint Services Staff. He served as an Extra Gentleman Usher to the Queen from 17 November 1970 to 5 June 1971. 
 
+Fine-Tuned Response:  Returning to Australia, Headlam became Deputy Chief of the Air Staff ( DCAS ) on 26 January 1965. He was appointed a Companion of the Order of the Bath ( CB ) " in recognition of distinguished service in the Borneo Territories " on 22 June. His tenure as DCAS coincided with the most significant rearmament program the Air Force had undertaken since World War II, and with manpower shortages stemming from this expansion and from Australia's increasing involvement in the security of South East Asia. The first RAAF helicopters were committed to the Vietnam War towards the end of his term, and he travelled to Saigon with the Chief of the General Staff, Lieutenant General Sir John Wilton, in March 1966 to plan the deployment. The year before, Wilton had recommended to Air Marshal Murdoch, the Chief of the Air Staff, that two Iroquois be sent to Vietnam for familiarisation purposes ; Murdoch had rebuffed Wilton, and the RAAF helicopter squadron was considered underprepared for its army co @-@ operation role when it finally did deploy. Headlam succeeded Air Vice Marshal Douglas Candy as AOC Support Command, Melbourne, on 8 August 1966. Support Command had been formed in 1959, by merging the RAAF's former Training and Maintenance Commands. On 1 January 1968, Headlam was posted to London as Head of the Australian Joint Services Staff. He served as an Extra Gentleman Usher to the Queen from 17 November 1970 to 5 June 1971. 
+
+Baseline Response:  Returning to Australia, Headlam became Deputy Chief of the Air Staff ( DCAS ) on 26 January 1965. He was appointed a Companion of the Order of the Bath ( CB ) " in recognition of distinguished service in the Borneo Territories " on 22 June. His tenure as DCAS coincided with the most significant rearmament program the Air Force had undertaken since World War II, and with manpower shortages stemming from this expansion and from Australia's increasing involvement in the security of South East Asia. The first RAAF helicopters were committed to the Vietnam War towards the end of his term, and he travelled to Saigon with the Chief of the General Staff, Lieutenant General Sir John Wilton, in March 1966 to plan the deployment. The year before, Wilton had recommended to Air Marshal Murdoch, the Chief of the Air Staff, that two Iroquois be sent to Vietnam for familiarisation purposes ; Murdoch had rebuffed Wilton, and the RAAF helicopter squadron was considered underprepared for its army co @-@ operation role when it finally did deploy. Headlam succeeded Air Vice Marshal Douglas Candy as AOC Support Command, Melbourne, on 8 August 1966. Support Command had been formed in 1959, by merging the RAAF's former Training and Maintenance Commands. On 1 January 1968, Headlam was posted to London as Head of the Australian Joint Services Staff. He served as an Extra Gentleman Usher to the Queen from 17 November 1970 to 5 June 1971. 
+
 --------------------------------------------------------------------------------
 Prompt:  = = Retirement = = 
 
 Fine-Tuned Response:  = = Retirement = = 
-
+ = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 Baseline Response:  = = Retirement = = 
 
 --------------------------------------------------------------------------------
@@ -358,7 +655,46 @@ Baseline Response:  Returning to Australia in June 1971, Headlam took resettleme
 Prompt:  = M @-@ 82 ( Michigan highway ) = 
 
 Fine-Tuned Response:  = M @-@ 82 ( Michigan highway ) = 
-
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@ 82 ( Michigan highway ) = 
+ = M @-@
 Baseline Response:  = M @-@ 82 ( Michigan highway ) = 
 
 --------------------------------------------------------------------------------
@@ -372,7 +708,80 @@ Baseline Response:  M @-@ 82 is a state trunkline in the Lower Peninsula in the 
 Prompt:  = = Route description = = 
 
 Fine-Tuned Response:  = = Route description = = 
-
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ = = Route description = = 
+ =
 Baseline Response:  = = Route description = = 
 
 --------------------------------------------------------------------------------
@@ -393,14 +802,14 @@ Baseline Response:  The Michigan Department of Transportation ( MDOT ), as a par
 Prompt:  = = History = = 
 
 Fine-Tuned Response:  = = History = = 
-
+ = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 Baseline Response:  = = History = = 
 
 --------------------------------------------------------------------------------
 Prompt:  = = = Previous designation = = = 
 
 Fine-Tuned Response:  = = = Previous designation = = = 
-
+ = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 Baseline Response:  = = = Previous designation = = = 
 
 --------------------------------------------------------------------------------
@@ -414,7 +823,7 @@ Baseline Response:  The first usage of M @-@ 82 was in the Upper Peninsula by Ju
 Prompt:  = = = Current designation = = = 
 
 Fine-Tuned Response:  = = = Current designation = = = 
-
+ = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 Baseline Response:  = = = Current designation = = = 
 
 --------------------------------------------------------------------------------
@@ -435,7 +844,7 @@ The which that this the the home
 Prompt:  = = Major intersections = = 
 
 Fine-Tuned Response:  = = Major intersections = = 
-
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 Baseline Response:  = = Major intersections = = 
 
 --------------------------------------------------------------------------------
